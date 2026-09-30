@@ -4,7 +4,7 @@ Management system for **Mkulima Mdogo Seedlings** (Nakuru) — a single-file web
 
 ## Running
 
-Open `index.html` in a browser. No build step or server is required. Chart.js, SheetJS, Mammoth and the Supabase client load from CDNs, so the first load on a device needs internet access.
+Open `index.html` in a browser. No build step or server is required. Keep the `assets/` folder (logos, app icons and the install manifest) next to `index.html` — copy both together when moving the app to another computer or a web host. Chart.js, SheetJS, Mammoth and the Supabase client load from CDNs, so the first load on a device needs internet access.
 
 ## Data and syncing
 
