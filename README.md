@@ -2,6 +2,10 @@
 
 Management system for **Mkulima Mdogo Seedlings** (Nakuru) — a single-file web app (`index.html`) covering sales, bookings, inventory, seedling catalogue, sowing records, propagation, manure, customers (CRM), accounting, employees, attendance, purchases, reports and settings.
 
+## Live app
+
+https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `claude/trusting-thompson-kmpdzd` branch changes. It publishes only `index.html` and `assets/`.
+
 ## Running
 
 Open `index.html` in a browser. No build step or server is required. Keep the `assets/` folder (logos, app icons and the install manifest) next to `index.html` — copy both together when moving the app to another computer or a web host. Chart.js, SheetJS, Mammoth and the Supabase client load from CDNs, so the first load on a device needs internet access.
