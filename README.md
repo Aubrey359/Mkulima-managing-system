@@ -17,3 +17,9 @@ All data is stored in the browser's `localStorage` (key `mkulimaDB_v3`), so each
 | Loise | Everything |
 | Sales — Managers | Sales, bookings, stock, customers, attendance, reports |
 | Sowing Team | Sowing records only (no password) |
+
+## Passwords
+
+Passwords are stored only as salted hashes (never in plain text), both in the code and in saved data/backups. Plain-text passwords saved by older versions are converted automatically the next time the app opens. The first time Loise or Sales signs in with the starter password, they must choose a new one before continuing. Loise can change passwords later under **Settings**.
+
+Note: this is a browser-only app, so these passwords keep casual users out but are not a substitute for server-side security.
