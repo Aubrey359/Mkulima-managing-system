@@ -1,0 +1,11 @@
+{
+  "editor.formatOnSave": true,
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[html]": { "editor.formatOnSave": false },
+  "files.exclude": { "node_modules": true },
+  "search.exclude": { "assets/*.png": true },
+  "liveServer.settings.root": "/",
+  "liveServer.settings.file": "index.html"
+}

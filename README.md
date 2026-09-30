@@ -10,6 +10,34 @@ https://shamba-sokoni.onrender.com — a Render static site that redeploys autom
 
 Open `index.html` in a browser. No build step or server is required. Keep the `assets/` folder (logos, app icons and the install manifest) next to `index.html` — copy both together when moving the app to another computer or a web host. Chart.js, SheetJS, Mammoth and the Supabase client load from CDNs, so the first load on a device needs internet access.
 
+## Project structure
+
+```
+index.html                  page layout (sign-in screen, sidebar, icons) — loads everything below
+assets/css/styles.css       all styles and colour themes
+assets/js/01-core.js        data storage, roles, company details, helpers (loaded first)
+assets/js/02-…28-*.js       one file per part of the app: page hints, search, catalogue,
+                            propagation, reminders, manure, login, dashboard, sales, receipts,
+                            bookings, inventory, sowing, customers, accounting, employees,
+                            loans & salary, attendance, purchasing, reports, settings, tutorial
+assets/js/29-cloud-sync.js  Supabase sign-in and syncing
+assets/js/30-init.js        starts the app (loaded last)
+assets/*.png, manifest      logos, app icons, install manifest
+supabase/migrations/        database setup
+tests/sync.e2e.js           end-to-end sign-in/sync test
+```
+
+The scripts are plain browser scripts that share global functions and variables, and they run in the numbered order listed in `index.html`. A new file must be added there with its own `<script>` tag.
+
+## Working in Visual Studio Code
+
+1. Clone the repository and open the folder in VS Code (**File → Open Folder…**), on branch `claude/trusting-thompson-kmpdzd`.
+2. Accept the recommended extensions: **Prettier** (formats code on save) and **Live Server**.
+3. Click **Go Live** in the status bar (or right-click `index.html` → *Open with Live Server*) to run the app at `http://127.0.0.1:5500` — it reloads when you save.
+4. **Ctrl+Click** (or F12) on a function name jumps to where it is defined, even in another file; **Ctrl+P** opens a file by name; **Ctrl+Shift+F** searches the whole project.
+
+Anything pushed to the branch goes live on Render automatically, so test with Live Server first.
+
 ## Data and syncing
 
 All data is shared online through Supabase (project **shamba-sokoni**, table `records`), so every phone and computer sees the same records. Each device also keeps a full copy in the browser, so the app keeps working without internet: changes made offline are uploaded automatically when the connection returns. The status next to the user name in the top bar shows **Synced**, **Syncing…**, or **Offline — N changes waiting**; click it to sync immediately.
