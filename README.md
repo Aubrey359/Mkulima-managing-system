@@ -4,7 +4,7 @@ Management system for **Mkulima Mdogo Seedlings** (Nakuru) — a single-file web
 
 ## Live app
 
-https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `claude/trusting-thompson-kmpdzd` branch changes. It publishes only `index.html` and `assets/`.
+https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `main` branch changes. It publishes only `index.html` and `assets/`.
 
 ## Running
 
@@ -31,12 +31,12 @@ The scripts are plain browser scripts that share global functions and variables,
 
 ## Working in Visual Studio Code
 
-1. Clone the repository and open the folder in VS Code (**File → Open Folder…**), on branch `claude/trusting-thompson-kmpdzd`.
+1. Clone the repository and open the folder in VS Code (**File → Open Folder…**).
 2. Accept the recommended extensions: **Prettier** (formats code on save) and **Live Server**.
 3. Click **Go Live** in the status bar (or right-click `index.html` → *Open with Live Server*) to run the app at `http://127.0.0.1:5500` — it reloads when you save.
 4. **Ctrl+Click** (or F12) on a function name jumps to where it is defined, even in another file; **Ctrl+P** opens a file by name; **Ctrl+Shift+F** searches the whole project.
 
-Anything pushed to the branch goes live on Render automatically, so test with Live Server first.
+Anything pushed to `main` goes live on Render automatically, so test with Live Server first.
 
 ## Data and syncing
 
