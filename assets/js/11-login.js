@@ -266,7 +266,10 @@ function enterApp() {
   applyNavPos(localStorage.getItem('mk_navpos') || 'left');
   applyFont(localStorage.getItem('mk_font') || 'default');
   applySidebarHidden();
-  document.getElementById('whoUser').textContent = session.u;
+  // Show the user's name only when it differs from the role label (avoids "Loise · Loise")
+  var sameName = session.u === ROLES[session.role].label;
+  document.getElementById('whoUser').textContent = sameName ? '' : session.u;
+  document.getElementById('whoSep').style.display = sameName ? 'none' : '';
   document.getElementById('whoRole').textContent = ROLES[session.role].label;
   buildNav();
   applyLang();

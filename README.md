@@ -4,7 +4,7 @@ Management system for **Mkulima Mdogo Seedlings** (Nakuru) — a single-file web
 
 ## Live app
 
-https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `main` branch changes. Render settings: **Build Command** `npm run build`, **Publish Directory** `public` (only `index.html`, `sw.js` and `assets/` are published).
+https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `main` branch changes. Render settings: **Build Command** `npm run build`, **Publish Directory** `public` (only `index.html`, `privacy.html`, `sw.js`, `assets/` and, once added, `.well-known/` are published).
 
 After the first visit, the app opens even without internet: `sw.js` (a service worker) keeps a copy of the app on the device and refreshes it whenever the device is online.
 
@@ -27,7 +27,9 @@ assets/js/30-init.js        starts the app (loaded last)
 assets/*.png, manifest      logos, app icons, install manifest
 sw.js                       service worker: lets the app open without internet
 supabase/migrations/        database setup
-tests/                      end-to-end tests (sync, numbering, offline)
+tests/                      end-to-end tests (sync, numbering, offline, forms, buttons)
+privacy.html                privacy policy (linked from the sign-in screen; needed for the Play Store)
+playstore/                  Play Store listing: icon, feature graphic, screenshots, guide (PLAYSTORE.md)
 ```
 
 The scripts are plain browser scripts that share global functions and variables, and they run in the numbered order listed in `index.html`. A new file must be added there with its own `<script>` tag.
@@ -76,3 +78,7 @@ A second workflow (`.github/workflows/keepalive.yml`) pings the database every t
 2. **Move the existing data in** (once, on the device that has it): open the old file → **Settings → Backup** (downloads `Mkulima_Backup_<date>.xlsx` and `Mkulima_Full_<date>.json`) → open https://shamba-sokoni.onrender.com → sign in as **Loise** → **Settings → Restore** → choose the **`Mkulima_Full_<date>.json`** file.
 3. **Loise and Sales sign in once** with their starter password and set their own. Sowing workers just tap *Sowing Team* — no password.
 4. **Each phone/computer** opens the link once while online (then it also works offline) and can be added to the home screen.
+
+## Play Store
+
+Everything needed to publish the app on Google Play (listing text, graphics, screenshots, form answers and step-by-step build instructions) is in [`playstore/PLAYSTORE.md`](playstore/PLAYSTORE.md).

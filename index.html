@@ -123,6 +123,7 @@
       </div>
 
       <div id="loginErr"></div>
+      <p class="lgPriv"><a href="privacy.html">Privacy policy</a></p>
     </div>
   </div>
 </div>
@@ -150,7 +151,7 @@
       <h2 id="pageTitle">Dashboard</h2>
       <div class="gsWrap"><input id="gq" placeholder="Search customers, orders, bookings..." autocomplete="off" oninput="gSearch(this.value)" onblur="setTimeout(function(){document.getElementById('gsRes').style.display='none'},150)"><div id="gsRes"></div></div>
       <button class="bellBtn" id="bellBtn" onclick="showReminders()" title="Reminders"><svg class="ic"><use href="#i-bell"/></svg><span id="bellCnt"></span></button>
-      <div class="who"><span id="whoUser"></span> &nbsp;·&nbsp; <b id="whoRole"></b> &nbsp;·&nbsp; <span id="sessTimer" style="font-size:11px;color:var(--muted)"></span> &nbsp;·&nbsp; <span id="syncStat" style="font-size:11px;font-weight:600;cursor:pointer" onclick="syncNow()"></span></div>
+      <div class="who"><span id="whoUser"></span><span id="whoSep"> &nbsp;·&nbsp; </span><b id="whoRole"></b> &nbsp;·&nbsp; <span id="sessTimer" style="font-size:11px;color:var(--muted)"></span> &nbsp;·&nbsp; <span id="syncStat" style="font-size:11px;font-weight:600;cursor:pointer" onclick="syncNow()"></span></div>
     </div>
     <div id="content"></div>
   </div>
