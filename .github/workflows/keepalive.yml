@@ -1,0 +1,18 @@
+name: Keep Supabase awake
+
+# Free Supabase projects pause after a week without activity. This pings the
+# database every two days so the shared data stays online.
+on:
+  schedule:
+    - cron: '17 6 */2 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping database
+        run: |
+          curl -fsS -X POST "https://ydorittbbchiywpgjvel.supabase.co/rest/v1/rpc/ping" \
+            -H "apikey: sb_publishable_kxLESJMSPyUZ33y1caeKwQ_znRXLmh4" \
+            -H "Content-Type: application/json" -d '{}'

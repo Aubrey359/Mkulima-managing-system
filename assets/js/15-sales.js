@@ -410,7 +410,7 @@ function saveOrder() {
   DB.orders.push(o);
   logAudit('Sale ' + o.no + ' — ' + custName(custId) + ' — ' + fmt(total));
   saveDB();
-  alert('<svg class="ic"><use href="#i-check"/></svg> ' + t('saved') + ' — ' + o.no);
+  alert('✓ ' + t('saved') + ' — ' + o.no);
   var autop = document.getElementById('o_autoprint').checked;
   TAB.sales = 1;
   rSales();

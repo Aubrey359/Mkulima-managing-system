@@ -133,7 +133,7 @@ function showDupModal() {
             esc(c.loc || '—') +
             '</span><button class="btn red sm" onclick="if(confirm(\'Delete this duplicate record?\')){DB.cust=DB.cust.filter(function(x){return x.id!==\'' +
             c.id +
-            '\'});saveDB();closeModal();showDupModal();rCRMList()}">Delete</button></div>'
+            '\'});saveDB();closeModal();showDupModal();if(CUR===\'crm\')rCRMList()}">Delete</button></div>'
           );
         })
         .join('<hr style="margin:6px 0">') +

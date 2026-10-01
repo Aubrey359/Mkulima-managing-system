@@ -116,7 +116,7 @@ function rLoans() {
         out > 0 ? '<span class="low">' + fmt(out) + '</span>' : '<span class="badge g">Cleared</span>',
         l.perMonth ? fmt(l.perMonth) : '—',
         esc(l.note || ''),
-        '<button class="btn gray sm" onclick="loanEdit(\'' +
+        '<button class="btn gray sm" onclick="loanForm(\'' +
           l.id +
           '\')"><svg class="ic"><use href="#i-pencil"/></svg></button> ' +
           '<button class="btn red sm" onclick="loanDel(\'' +

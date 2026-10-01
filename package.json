@@ -2,13 +2,16 @@
   "name": "shamba-sokoni-system",
   "private": true,
   "scripts": {
-    "test": "node tests/sync.e2e.js && node tests/offline.e2e.js",
+    "test": "node tests/sync.e2e.js && node tests/offline.e2e.js && node tests/forms.e2e.js && node tests/buttons.e2e.js",
     "format": "prettier --write \"assets/js/*.js\" \"assets/css/*.css\" sw.js tests",
     "build": "rm -rf public && mkdir -p public && cp -r index.html sw.js assets public/"
   },
   "devDependencies": {
     "@supabase/supabase-js": "2.117.2",
+    "chart.js": "4.4.1",
+    "mammoth": "1.6.0",
     "playwright": "^1.50.0",
-    "prettier": "3.9.9"
+    "prettier": "3.9.9",
+    "xlsx": "0.18.5"
   }
 }

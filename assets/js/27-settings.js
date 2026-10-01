@@ -162,7 +162,7 @@ function rSet() {
     (isLoise()
       ? '<div class="card"><h3><svg class="ic"><use href="#i-bell"/></svg> Reminders</h3><div class="rowflex"><label>Remind me this many days ahead</label><input type="number" min="0" max="30" id="rem_days" value="' +
         remDays() +
-        '" style="width:90px"><button class="btn sm" onclick="DB.meta.remDays=Math.max(0,Math.min(30,num(rem_days.value)));saveDB();updateBell();msgBox(\'<svg class="ic"><use href="#i-check"/></svg> Saved\',\'Reminders now show pick-ups, deliveries and nearly-ready seedlings up to \'+remDays()+\' days ahead.\')"><svg class="ic"><use href="#i-save"/></svg> Save</button></div><p style="font-size:12px;color:var(--muted);margin-top:6px">Covers pick-ups, deliveries to dispatch, seedlings and propagation jobs close to ready.</p></div>'
+        '" style="width:90px"><button class="btn sm" onclick="DB.meta.remDays=Math.max(0,Math.min(30,num(rem_days.value)));saveDB();updateBell();msgBox(\'Saved\',\'Reminders now show pick-ups, deliveries and nearly-ready seedlings up to \'+remDays()+\' days ahead.\')"><svg class="ic"><use href="#i-save"/></svg> Save</button></div><p style="font-size:12px;color:var(--muted);margin-top:6px">Covers pick-ups, deliveries to dispatch, seedlings and propagation jobs close to ready.</p></div>'
       : '') +
     '<div class="card"><h3><svg class="ic"><use href="#i-bell"/></svg> Sound</h3>' +
     '<label class="swRow"><input type="checkbox" id="snd_on"' +
@@ -289,7 +289,7 @@ function restore(inp) {
         alert('Restored');
         location.reload();
       } catch (err) {
-        alert('?');
+        alert('This file is not a Mkulima backup. Choose the Mkulima_Full_<date>.json file that Backup downloaded.');
       }
       return;
     }
@@ -356,7 +356,7 @@ function restore(inp) {
       alert('Imported ' + n);
       location.reload();
     } catch (err) {
-      alert('?');
+      alert('Could not read this file. For a full restore choose the Mkulima_Full_<date>.json backup; Excel/CSV files can only add customers, stock and similar lists.');
     }
   };
   if (f.name.endsWith('.json') || f.name.endsWith('.csv')) r.readAsText(f);

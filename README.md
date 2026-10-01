@@ -66,4 +66,13 @@ The first sign-in with a starter password asks for a new password (at least 6 ch
 
 ## Tests
 
-`npm install && npx playwright install chromium && npm test` runs the end-to-end tests: sign-in and syncing across several simulated devices (against an in-memory stand-in for Supabase), document numbering, and opening the app offline. They also run automatically on GitHub for every push (`.github/workflows/test.yml`). Set `CHROMIUM_PATH` to use a specific Chromium.
+`npm install && npx playwright install chromium && npm test` runs the end-to-end tests: sign-in and syncing across several simulated devices (against an in-memory stand-in for Supabase) including document numbering; opening the app offline; filling in and saving every main form (sales, credit, bookings, stock, sowing, customers, accounts, staff, payroll, attendance, purchasing, documents, propagation, catalogue, reports, Excel export, backup and restore); and clicking every button as each role. They run automatically on GitHub for every push (`.github/workflows/test.yml`). Set `CHROMIUM_PATH` to use a specific Chromium.
+
+A second workflow (`.github/workflows/keepalive.yml`) pings the database every two days so the free Supabase project is never paused for inactivity.
+
+## Go-live checklist
+
+1. **Render** → Settings → Build & Deploy: Branch `main`, Build Command `npm run build`, Publish Directory `public`.
+2. **Move the existing data in** (once, on the device that has it): open the old file → **Settings → Backup** (downloads `Mkulima_Backup_<date>.xlsx` and `Mkulima_Full_<date>.json`) → open https://shamba-sokoni.onrender.com → sign in as **Loise** → **Settings → Restore** → choose the **`Mkulima_Full_<date>.json`** file.
+3. **Everyone signs in once** with their starter password and sets their own.
+4. **Each phone/computer** opens the link once while online (then it also works offline) and can be added to the home screen.

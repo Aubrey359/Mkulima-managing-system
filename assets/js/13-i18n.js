@@ -1,5 +1,11 @@
 /* ================= I18N ================= */
 var SW = {
+  docs: 'Nyaraka',
+  orderbook: 'Kitabu cha Oda',
+  receipt: 'Risiti',
+  saved: 'Imehifadhiwa',
+  needpay: 'wateja wanaodaiwa',
+  autofill: 'Hujaza yenyewe',
   man: 'Mbolea',
   cat: 'Orodha ya Miche',
   prop: 'Uzalishaji wa Miche',
@@ -45,7 +51,7 @@ var SW = {
   nothing: 'Hakuna taarifa bado',
   enterpass: 'Weka nenosiri',
   wrongpass: 'Nenosiri si sahihi. Jaribu tena.',
-  present: 'Hajifungua',
+  present: 'Yupo',
   absent: 'Hayupo',
   leave: 'Likizo',
   pending: 'Inasubiri',
