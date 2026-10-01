@@ -4,7 +4,9 @@ Management system for **Mkulima Mdogo Seedlings** (Nakuru) — a single-file web
 
 ## Live app
 
-https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `main` branch changes. It publishes only `index.html` and `assets/`.
+https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `main` branch changes. Render settings: **Build Command** `npm run build`, **Publish Directory** `public` (only `index.html`, `sw.js` and `assets/` are published).
+
+After the first visit, the app opens even without internet: `sw.js` (a service worker) keeps a copy of the app on the device and refreshes it whenever the device is online.
 
 ## Running
 
@@ -23,8 +25,9 @@ assets/js/02-…28-*.js       one file per part of the app: page hints, search, 
 assets/js/29-cloud-sync.js  Supabase sign-in and syncing
 assets/js/30-init.js        starts the app (loaded last)
 assets/*.png, manifest      logos, app icons, install manifest
+sw.js                       service worker: lets the app open without internet
 supabase/migrations/        database setup
-tests/sync.e2e.js           end-to-end sign-in/sync test
+tests/                      end-to-end tests (sync, numbering, offline)
 ```
 
 The scripts are plain browser scripts that share global functions and variables, and they run in the numbered order listed in `index.html`. A new file must be added there with its own `<script>` tag.
@@ -44,7 +47,7 @@ All data is shared online through Supabase (project **shamba-sokoni**, table `re
 
 - Changes are uploaded a moment after each save and other devices' changes are downloaded every 20 seconds.
 - If two devices edit *different* records they both keep their changes. If they edit the *same* record at the same time, the last one to upload wins.
-- Receipt/document counters never go backwards, but two devices working **offline** at the same time could hand out the same receipt number.
+- Receipt and document numbers (RCP-0012, PRP-0003, …) come from a shared counter on the server: each device keeps its next number reserved in advance, so two devices never issue the same number. A device that is offline and has used its reserved number adds its own code instead (e.g. `RCP-0012-K7`), which is still unique. Numbers can therefore be slightly out of order between devices, with an occasional gap.
 - **Restore** (Settings) replaces the shared data on every device, so use it with care. Keep downloading backups monthly.
 
 The database setup lives in `supabase/migrations/`.
@@ -63,4 +66,4 @@ The first sign-in with a starter password asks for a new password (at least 6 ch
 
 ## Tests
 
-`npm install && npm test` runs an end-to-end test of sign-in and syncing (several simulated devices against an in-memory stand-in for Supabase). Set `CHROMIUM_PATH` to use a specific Chromium.
+`npm install && npx playwright install chromium && npm test` runs the end-to-end tests: sign-in and syncing across several simulated devices (against an in-memory stand-in for Supabase), document numbering, and opening the app offline. They also run automatically on GitHub for every push (`.github/workflows/test.yml`). Set `CHROMIUM_PATH` to use a specific Chromium.

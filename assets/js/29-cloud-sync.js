@@ -294,6 +294,7 @@ function syncNow() {
       SYNC.at = new Date();
       SYNC.err = '';
       syncShow('ok');
+      numRefill();
       if (changed) syncRefreshView();
     })
     .catch(function (e) {
@@ -374,6 +375,78 @@ document.addEventListener('focusout', function () {
       if (SYNC.needView) syncRefreshView();
     }, 300);
 });
+/* Document numbers (RCP-0012, PRP-0003, ...)
+ Each device keeps one number per prefix reserved in advance from the shared server counter,
+ so two devices can never issue the same number. With nothing reserved (offline), the device
+ uses its own count plus a device code instead, e.g. RCP-0012-K7, which is still unique. */
+var NUM_POOL_KEY = 'mk_num_pool',
+  NUM_PREFIXES = ['RCP', 'PRP', 'QUO', 'INV', 'DEL', 'REQ', 'LPO', 'REC'],
+  NUM_BUSY = {};
+function numPool() {
+  try {
+    return JSON.parse(localStorage.getItem(NUM_POOL_KEY)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+function numSavePool(p) {
+  try {
+    localStorage.setItem(NUM_POOL_KEY, JSON.stringify(p));
+  } catch (e) {}
+}
+function deviceCode() {
+  var c = localStorage.getItem('mk_device');
+  if (!c) {
+    c =
+      'ABCDEFGHJKMNPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 23)) +
+      '23456789'.charAt(Math.floor(Math.random() * 8));
+    localStorage.setItem('mk_device', c);
+  }
+  return c;
+}
+function numTake(prefix) {
+  var pool = numPool(),
+    n = pool[prefix],
+    no;
+  delete pool[prefix];
+  numSavePool(pool);
+  if (n) {
+    DB.meta[prefix] = Math.max(DB.meta[prefix] || 0, n);
+    no = prefix + '-' + String(n).padStart(4, '0');
+  } else {
+    DB.meta[prefix] = (DB.meta[prefix] || 0) + 1;
+    no = prefix + '-' + String(DB.meta[prefix]).padStart(4, '0') + '-' + deviceCode();
+  }
+  saveDB();
+  numRefill([prefix]);
+  return no;
+}
+// Reserve a number for every prefix that has none (only Loise and Sales issue documents)
+function numRefill(prefixes) {
+  if (!SB || !session || !SYNC.started || (role() !== 'loise' && role() !== 'sales')) return;
+  (prefixes || NUM_PREFIXES).forEach(function (prefix) {
+    if (numPool()[prefix] || NUM_BUSY[prefix]) return;
+    NUM_BUSY[prefix] = true;
+    SB.rpc('next_counter', { p_name: prefix, p_min: (DB.meta[prefix] || 0) + 1 })
+      .then(function (res) {
+        if (res.error || !res.data) return;
+        // Overtaken by a number issued offline meanwhile: reserve a fresh one above it
+        if (res.data <= (DB.meta[prefix] || 0))
+          return setTimeout(function () {
+            numRefill([prefix]);
+          }, 0);
+        var pool = numPool();
+        if (!pool[prefix]) {
+          pool[prefix] = res.data;
+          numSavePool(pool);
+        }
+      })
+      .catch(function () {})
+      .then(function () {
+        NUM_BUSY[prefix] = false;
+      });
+  });
+}
 // Clear this device's copy (used when a different role signs in on the same device)
 function syncWipeLocal() {
   [DB_KEY, DB_KEY + '_bak', SYNC_SHADOW_KEY, SYNC_LAST_KEY].forEach(function (k) {

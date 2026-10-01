@@ -13,6 +13,7 @@ const users = {
   sowing: { pw: 'W-start1', must: true }
 };
 const rows = new Map();
+const counters = {};
 let clock = Date.parse('2026-09-30T10:00:00Z');
 let down = new Set();
 const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
@@ -124,6 +125,12 @@ async function handle(route, dev) {
     users[b.target_role].must = false;
     return J(200, null);
   }
+  if (p === '/rest/v1/rpc/next_counter') {
+    const b = JSON.parse(body);
+    if (!['loise', 'sales'].includes(role)) return J(400, { message: 'Not allowed' });
+    counters[b.p_name] = Math.max(counters[b.p_name] || 0, (b.p_min || 1) - 1) + 1;
+    return J(200, counters[b.p_name]);
+  }
   if (p === '/rest/v1/records') {
     if (req.method() === 'POST') {
       const arr = JSON.parse(body);
@@ -149,15 +156,13 @@ async function handle(route, dev) {
         lim = +(u.searchParams.get('limit') || 1e9);
       return J(
         200,
-        out
-          .slice(off, off + lim)
-          .map((r) => ({
-            coll: r.coll,
-            id: r.id,
-            data: r.data,
-            deleted: r.deleted,
-            updated_at: r.updated_at
-          }))
+        out.slice(off, off + lim).map((r) => ({
+          coll: r.coll,
+          id: r.id,
+          data: r.data,
+          deleted: r.deleted,
+          updated_at: r.updated_at
+        }))
       );
     }
   }
@@ -276,16 +281,40 @@ async function handle(route, dev) {
   await sync(A);
   assert.equal(await q(A, () => DB.cust.filter((c) => c.id === 'c1').length), 0, 'delete propagated');
 
-  // 5. counters never go backwards
-  const n1 = await q(A, () => {
-    nextNo('RCP');
-    return nextNo('RCP');
-  });
+  // 5. document numbers: reserved from the server counter, unique across devices
   await sync(A);
   await sync(B);
-  const n2 = await q(B, () => nextNo('RCP'));
-  console.log('receipt numbers:', n1, '->', n2);
-  assert.equal(n2, 'RCP-0003');
+  await A.waitForTimeout(300);
+  const taken = [];
+  for (const [dev, n] of [
+    [A, 2],
+    [B, 2],
+    [A, 1],
+    [B, 1]
+  ]) {
+    for (let i = 0; i < n; i++) {
+      taken.push(await q(dev, () => nextNo('RCP')));
+      await dev.waitForTimeout(250); // the next number is reserved in the background
+    }
+  }
+  console.log('receipt numbers:', taken.join(' '));
+  assert.equal(new Set(taken).size, taken.length, 'numbers unique across devices');
+  assert(
+    taken.every((n) => /^RCP-\d{4}$/.test(n)),
+    'online numbers have no device code'
+  );
+  // offline with no reserved number: device code keeps it unique
+  down.add('B');
+  await q(B, () => localStorage.removeItem('mk_num_pool'));
+  const off = await q(B, () => nextNo('RCP'));
+  console.log('offline number:', off);
+  assert(/^RCP-\d{4}-[A-Z][2-9]$/.test(off), 'offline number has device code');
+  down.delete('B');
+  await sync(B);
+  await B.waitForTimeout(300);
+  const back = await q(B, () => nextNo('RCP'));
+  console.log('back online:', back);
+  assert(/^RCP-\d{4}$/.test(back) && !taken.includes(back), 'fresh reserved number after reconnecting');
 
   // 6. offline edits wait, then upload
   down.add('A');

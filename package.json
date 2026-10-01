@@ -2,8 +2,9 @@
   "name": "shamba-sokoni-system",
   "private": true,
   "scripts": {
-    "test": "node tests/sync.e2e.js",
-    "format": "prettier --write \"assets/js/*.js\" \"assets/css/*.css\" tests"
+    "test": "node tests/sync.e2e.js && node tests/offline.e2e.js",
+    "format": "prettier --write \"assets/js/*.js\" \"assets/css/*.css\" sw.js tests",
+    "build": "rm -rf public && mkdir -p public && cp -r index.html sw.js assets public/"
   },
   "devDependencies": {
     "@supabase/supabase-js": "2.117.2",

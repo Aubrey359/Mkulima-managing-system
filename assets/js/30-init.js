@@ -49,3 +49,10 @@ window.addEventListener('online', function () {
   if (session && !SYNC.started) bootSession();
 });
 bootSession();
+
+// Keep a copy of the app on this device so it opens without internet (only on a web address, not a local file)
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}

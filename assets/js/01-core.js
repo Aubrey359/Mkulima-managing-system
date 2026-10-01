@@ -402,10 +402,9 @@ function today() {
 function monthOf(d) {
   return String(d || '').slice(0, 7);
 }
+// Next document number, e.g. RCP-0012 (see numTake in 29-cloud-sync.js)
 function nextNo(prefix) {
-  DB.meta[prefix] = (DB.meta[prefix] || 0) + 1;
-  saveDB();
-  return prefix + '-' + String(DB.meta[prefix]).padStart(4, '0');
+  return numTake(prefix);
 }
 function role() {
   return session ? session.role : null;
