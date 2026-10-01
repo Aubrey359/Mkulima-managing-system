@@ -124,7 +124,6 @@ function saveBook() {
       amount: dep,
       method: t('cash')
     });
-    alert(mpesaMsg(dep, cname + ' ' + t('book')));
   }
   saveDB();
   rBookList();

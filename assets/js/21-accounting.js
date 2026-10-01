@@ -41,7 +41,7 @@ function rAcc() {
     '</option><option>M-Pesa</option><option>' +
     t('bank') +
     '</option></select></div></div>' +
-    '<button class="btn" onclick="var mc=null;if(in_m.value===\'M-Pesa\'){mc=mkMpesaCode();alert(mpesaMsg(num(in_amt.value),in_src.value,mc))}DB.income.push({id:uid(),date:in_date.value,src:in_src.value,amount:num(in_amt.value),method:in_m.value,mpesa:mc});saveDB();rAcc()"><svg class="ic"><use href="#i-save"/></svg></button>' +
+    '<button class="btn" onclick="var mc=null;if(in_m.value===\'M-Pesa\'){mc=mpesaAskCode(num(in_amt.value));if(mc===false)return}DB.income.push({id:uid(),date:in_date.value,src:in_src.value,amount:num(in_amt.value),method:in_m.value,mpesa:mc});saveDB();rAcc()"><svg class="ic"><use href="#i-save"/></svg></button>' +
     '<div class="mt" style="max-height:240px;overflow:auto">' +
     tbl(
       [t('date'), 'Source', t('method'), t('amount')],

@@ -567,26 +567,10 @@ function exportRows(name, rows) {
   XLSX.utils.book_append_sheet(wb, ws, name.slice(0, 28));
   XLSX.writeFile(wb, name + '.xlsx');
 }
-function mkMpesaCode() {
-  var code = 'MK' + String(DB.mpesa++).padStart(6, '0');
-  saveDB();
+// Reference codes for the demo data only (real payments carry Safaricom's M-Pesa receipt code)
+function demoMpesaCode() {
+  var code = 'DEMO' + String(DB.mpesa++).padStart(6, '0');
   return code;
-}
-function mpesaMsg(amount, who, code) {
-  code = code || mkMpesaCode();
-  return (
-    '<svg class="ic"><use href="#i-phone"/></svg> M-PESA CONFIRMED\n' +
-    code +
-    ' Confirmed. KES ' +
-    Number(amount).toLocaleString() +
-    ' sent to ' +
-    COMPANY.name +
-    ' (' +
-    COMPANY.tel +
-    ')' +
-    (who ? ' for ' + who : '') +
-    '.'
-  );
 }
 function logPrice(custId, item, price) {
   DB.pricehist.push({ id: uid(), date: today(), custId: custId, item: item, price: price });

@@ -35,7 +35,7 @@
   <h2>Information the app stores</h2>
   <ul>
     <li><b>Customers:</b> name, phone number, email (if given), location, crops grown, purchase history, amounts owed and follow-up notes.</li>
-    <li><b>Sales and bookings:</b> items, quantities, prices, payments, payment method and receipt numbers.</li>
+    <li><b>Sales and bookings:</b> items, quantities, prices, payments, payment method, receipt numbers and M-Pesa receipt codes.</li>
     <li><b>Staff:</b> name, phone number, role, salary, attendance, staff loans and payroll.</li>
     <li><b>Nursery records:</b> sowing, stock, catalogue prices, propagation jobs, suppliers, purchases, income and expenses.</li>
     <li><b>Activity log:</b> which staff role made a change and when (audit trail).</li>
@@ -49,9 +49,10 @@
   <ul>
     <li>Records are stored in a secure online database provided by <b>Supabase</b> (servers in Frankfurt, Germany, European Union), so that all staff devices share the same data.</li>
     <li>The app itself is served by <b>Render</b>.</li>
+    <li>When a customer pays by <b>M-Pesa</b> through the app, their phone number and the amount are sent to <b>Safaricom</b> to request the payment, and Safaricom returns the M-Pesa receipt code. We keep the phone number, amount, status and receipt code of each request.</li>
     <li>Each signed-in device also keeps a copy so the app works without internet. When a different role signs in on the same device, the previous copy is cleared once its changes have been uploaded.</li>
   </ul>
-  <p>These providers process data only on our behalf to run the app. We may also disclose information if Kenyan law requires it.</p>
+  <p>These providers (and Safaricom for M-Pesa payments) process data only to run the app and the payments. We may also disclose information if Kenyan law requires it.</p>
 
   <h2>How it is protected</h2>
   <ul>

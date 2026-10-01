@@ -23,7 +23,9 @@ assets/js/02-…28-*.js       one file per part of the app: page hints, search, 
                             bookings, inventory, sowing, customers, accounting, employees,
                             loans & salary, attendance, purchasing, reports, settings, tutorial
 assets/js/29-cloud-sync.js  Supabase sign-in and syncing
-assets/js/30-init.js        starts the app (loaded last)
+assets/js/30-init.js        starts the app
+assets/js/31-mpesa.js       M-Pesa payment requests and settings
+supabase/functions/         server functions for M-Pesa (mpesa-stk, mpesa-callback)
 assets/*.png, manifest      logos, app icons, install manifest
 sw.js                       service worker: lets the app open without internet
 supabase/migrations/        database setup
@@ -82,3 +84,7 @@ A second workflow (`.github/workflows/keepalive.yml`) pings the database every t
 ## Play Store
 
 Everything needed to publish the app on Google Play (listing text, graphics, screenshots, form answers and step-by-step build instructions) is in [`playstore/PLAYSTORE.md`](playstore/PLAYSTORE.md).
+
+## M-Pesa
+
+Sales and credit payments can be taken by M-Pesa (Safaricom Daraja STK Push): the customer gets a prompt on their phone, and the real M-Pesa code is saved on the sale. Setup (Daraja keys, test mode, going live) is in [`MPESA.md`](MPESA.md).

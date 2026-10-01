@@ -116,7 +116,8 @@ function rSet() {
         '</h3><div class="frow"><div><label>Role</label><select id="cp_r"><option value="loise">Loise</option><option value="sales">Sales</option></select></div><div><label>' +
         t('password') +
         '</label><input id="cp_p" type="password" autocomplete="new-password"></div><div><label>Repeat password</label><input id="cp_p2" type="password" autocomplete="new-password"></div></div>' +
-        '<button class="btn" onclick="changePwFromSettings()"><svg class="ic"><use href="#i-save"/></svg></button></div>'
+        '<button class="btn" onclick="changePwFromSettings()"><svg class="ic"><use href="#i-save"/></svg></button></div>' +
+        mpesaSettingsCard()
       : '') +
     '<div class="card"><h3><svg class="ic"><use href="#i-palette"/></svg> ' +
     t('theme') +
@@ -189,6 +190,7 @@ function rSet() {
   if (ns) ns.value = document.body.getAttribute('data-navpos') || 'left';
   if (isLoise()) {
     rAuditList();
+    mpsLoad();
   }
 }
 var deferredPWAPrompt = null;
@@ -612,7 +614,7 @@ function doLoadDemo() {
       } else if (r < 0.7) {
         pay = 'M-Pesa';
         paid = total;
-        code = mkMpesaCode();
+        code = demoMpesaCode();
       } else if (r < 0.8) {
         pay = t('bank');
         paid = total;
@@ -681,7 +683,7 @@ function doLoadDemo() {
         mr = rnd(),
         mpay = mr < 0.5 ? t('cash') : mr < 0.9 ? 'M-Pesa' : t('credit'),
         mpaid = mpay === t('credit') ? 0 : mtot,
-        mcode = mpay === 'M-Pesa' ? mkMpesaCode() : null;
+        mcode = mpay === 'M-Pesa' ? demoMpesaCode() : null;
       DB.orders.push({
         id: id(),
         no: nextNo('RCP'),

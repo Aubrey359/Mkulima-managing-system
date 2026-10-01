@@ -76,7 +76,7 @@ function orderForm() {
     '</option></select></div></div>' +
     '<div class="frow"><div><label>' +
     t('method') +
-    '</label><select id="o_pay"><option>' +
+    '</label><select id="o_pay" onchange="oPayToggle()"><option>' +
     t('cash') +
     '</option><option>M-Pesa</option><option>' +
     t('bank') +
@@ -91,6 +91,9 @@ function orderForm() {
     '<div><label>Propagation</label><input id="o_prop" placeholder="' +
     t('autofill') +
     '"></div></div>' +
+    '<div class="frow" id="o_mwrap" style="display:none"><div><label>M-Pesa code</label><input id="o_mref" class="upcase" placeholder="e.g. SJK4ABC123"></div>' +
+    '<div><label>&nbsp;</label><button class="btn" type="button" onclick="oMpesaRequest()"><svg class="ic"><use href="#i-phone"/></svg> Request M-Pesa payment</button></div>' +
+    '<div><label>&nbsp;</label><div id="o_mok" style="font-size:13px;color:var(--green2);font-weight:600;padding-top:10px"></div></div></div>' +
     '<div class="frow"><div><label>Handover</label><select id="o_hand" onchange="oHandToggle()"><option value="now">Taken now (pick-up)</option><option value="later">Deliver later</option></select></div><div id="o_dwrap" style="display:none"><label>Delivery date</label><input type="date" id="o_ddate" value="' +
     today() +
     '"></div><div id="o_awrap" style="display:none"><label>Delivery address</label><input id="o_daddr" list="o_daddr_dl" placeholder="Where to?">' +
@@ -321,6 +324,20 @@ function saveOrder() {
     return;
   }
   if (!ok) return;
+  // M-Pesa: use the code from the payment request, or the one typed from the customer's SMS
+  var mpesaSel = document.getElementById('o_pay').value === 'M-Pesa',
+    mref = mpesaSel ? (document.getElementById('o_mref').value || '').trim().toUpperCase() : '';
+  if (mref && !mpesaCodeOk(mref)) {
+    alert('That M-Pesa code does not look right (e.g. SJK4ABC123)');
+    return;
+  }
+  if (
+    mpesaSel &&
+    !mref &&
+    num(document.getElementById('o_paid').value) > 0 &&
+    !confirm('No M-Pesa code entered. Save the sale without it?')
+  )
+    return;
   if (!custId) {
     var cn = (document.getElementById('o_custq').value || '').trim() || 'Walk-in Customer';
     var nc = {
@@ -349,10 +366,7 @@ function saveOrder() {
   if (paid < total) pay = t('credit');
   var mcode = null;
   if (paid > 0) {
-    if (pay === 'M-Pesa') {
-      mcode = mkMpesaCode();
-      alert(mpesaMsg(paid, custName(custId), mcode));
-    }
+    if (mpesaSel) mcode = mref || null;
     DB.income.push({
       id: uid(),
       date: document.getElementById('o_date').value,
@@ -597,7 +611,7 @@ function payModal(id) {
       '"></div>' +
       '<div><label>' +
       t('method') +
-      '</label><select id="pay_m"><option>' +
+      "</label><select id=\"pay_m\" onchange=\"document.getElementById('pay_mw').style.display=this.value==='M-Pesa'?'':'none'\"><option>" +
       t('cash') +
       '</option><option>M-Pesa</option><option>' +
       t('bank') +
@@ -607,6 +621,10 @@ function payModal(id) {
       '</label><input type="date" id="pay_d" value="' +
       today() +
       '"></div></div>' +
+      '<div class="frow" id="pay_mw" style="display:none"><div><label>M-Pesa code</label><input id="pay_mref" class="upcase" placeholder="e.g. SJK4ABC123"></div>' +
+      '<div><label>&nbsp;</label><button class="btn" type="button" onclick="payMpesaRequest(\'' +
+      id +
+      '\')"><svg class="ic"><use href="#i-phone"/></svg> Request M-Pesa payment</button></div></div>' +
       '<div class="mt"><button class="btn" onclick="savePay(\'' +
       id +
       '\')"><svg class="ic"><use href="#i-save"/></svg> ' +
@@ -627,16 +645,17 @@ function savePay(id) {
   }
   if (amt > num(o.balance) && !confirm('Amount exceeds balance (' + fmt(o.balance) + '). Continue?')) return;
   var m = document.getElementById('pay_m').value,
-    d = document.getElementById('pay_d').value;
+    d = document.getElementById('pay_d').value,
+    mref = m === 'M-Pesa' ? (document.getElementById('pay_mref').value || '').trim().toUpperCase() : '';
+  if (mref && !mpesaCodeOk(mref)) {
+    alert('That M-Pesa code does not look right (e.g. SJK4ABC123)');
+    return;
+  }
   o.paid = num(o.paid) + amt;
   o.balance = num(o.balance) - amt;
   o.payments = o.payments || [];
-  o.payments.push({ date: d, amount: amt, method: m });
-  var mc = null;
-  if (m === 'M-Pesa') {
-    mc = mkMpesaCode();
-    alert(mpesaMsg(amt, custName(o.custId), mc));
-  }
+  o.payments.push({ date: d, amount: amt, method: m, mpesa: mref || null });
+  var mc = mref || null;
   DB.income.push({
     id: uid(),
     date: d,
@@ -650,6 +669,27 @@ function savePay(id) {
   closeModal();
   if (CUR === 'dash') rDash();
   else if (CUR === 'sales' && TAB.sales === 1) orderBook();
+}
+// Settle credit by M-Pesa: once the customer pays, the payment is recorded automatically
+function payMpesaRequest(id) {
+  var o = DB.orders.find(function (x) {
+    return x.id === id;
+  });
+  var c = DB.cust.find(function (x) {
+    return x.id === o.custId;
+  });
+  mpesaRequest({
+    phone: (c && c.phone) || '',
+    amount: num(document.getElementById('pay_amt').value) || o.balance,
+    ref: o.no,
+    onPaid: function (receipt, amount) {
+      payModal(id);
+      document.getElementById('pay_m').value = 'M-Pesa';
+      document.getElementById('pay_amt').value = amount;
+      document.getElementById('pay_mref').value = receipt;
+      savePay(id);
+    }
+  });
 }
 function printOrderBook() {
   var list = filteredOrders();

@@ -2077,3 +2077,11 @@ button {
     max-height: 92dvh;
   }
 }
+
+/* M-Pesa codes: show what staff type in capitals, keep the hint text normal */
+.upcase {
+  text-transform: uppercase;
+}
+.upcase::placeholder {
+  text-transform: none;
+}
