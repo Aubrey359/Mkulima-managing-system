@@ -58,11 +58,11 @@ Each role has its own online account; the server checks the password and only re
 
 | Role | Access |
 |------|--------|
-| Loise | Everything; can change every role's password in **Settings** |
+| Loise | Everything; can change the Loise and Sales passwords in **Settings** |
 | Sales — Managers | Sales, bookings, stock, customers, attendance, reports |
-| Sowing Team | Sowing records only (server blocks money, staff and other data) |
+| Sowing Team | **No password** — tap *Sowing Team* to open. Sowing records only; the server gives this account sowing, stock, catalogue, bookings and propagation data, never customers, sales, money or staff data |
 
-The first sign-in with a starter password asks for a new password (at least 6 characters). When a different role signs in on the same device, the previous role's copy of the data is cleared from that device.
+Loise and Sales: the first sign-in with a starter password asks for a new password (at least 6 characters). When a different role signs in on the same device, the previous role's copy of the data is cleared from that device.
 
 ## Tests
 
@@ -74,5 +74,5 @@ A second workflow (`.github/workflows/keepalive.yml`) pings the database every t
 
 1. **Render** → Settings → Build & Deploy: Branch `main`, Build Command `npm run build`, Publish Directory `public`.
 2. **Move the existing data in** (once, on the device that has it): open the old file → **Settings → Backup** (downloads `Mkulima_Backup_<date>.xlsx` and `Mkulima_Full_<date>.json`) → open https://shamba-sokoni.onrender.com → sign in as **Loise** → **Settings → Restore** → choose the **`Mkulima_Full_<date>.json`** file.
-3. **Everyone signs in once** with their starter password and sets their own.
+3. **Loise and Sales sign in once** with their starter password and set their own. Sowing workers just tap *Sowing Team* — no password.
 4. **Each phone/computer** opens the link once while online (then it also works offline) and can be added to the home screen.

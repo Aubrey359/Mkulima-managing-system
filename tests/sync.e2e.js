@@ -10,7 +10,7 @@ const SBJS = fs.readFileSync(require.resolve('@supabase/supabase-js/dist/umd/sup
 const users = {
   loise: { pw: 'L-start1', must: true },
   sales: { pw: 'S-start1', must: true },
-  sowing: { pw: 'W-start1', must: true }
+  sowing: { pw: 'mkulima-sowing-open', must: false }
 };
 const rows = new Map();
 const counters = {};
@@ -62,7 +62,7 @@ function sessionFor(role) {
 const canRead = (r, c) =>
   r === 'loise' ||
   r === 'sales' ||
-  (r === 'sowing' && ['sowing', 'inv', 'cat', 'bookings', 'prop', 'orders', 'cust', '_meta'].includes(c));
+  (r === 'sowing' && ['sowing', 'inv', 'cat', 'bookings', 'prop', '_meta'].includes(c));
 const canWrite = (r, c) =>
   r === 'loise' || r === 'sales' || (r === 'sowing' && ['sowing', 'audit'].includes(c));
 const log = [];
@@ -118,6 +118,7 @@ async function handle(route, dev) {
   if (!role) return J(401, { message: 'JWT required' });
   if (p === '/rest/v1/rpc/set_role_password') {
     const b = JSON.parse(body);
+    if (b.target_role === 'sowing') return J(400, { message: 'Sowing Team signs in without a password' });
     if (role !== 'loise' && role !== b.target_role) return J(400, { message: 'Not allowed' });
     if ((b.new_password || '').length < 6)
       return J(400, { message: 'Password must be at least 6 characters' });
@@ -344,13 +345,19 @@ async function handle(route, dev) {
   assert.deepEqual(await q(A, () => DB.inv.map((i) => i.id).sort()), ['i1', 'i2']);
   assert.deepEqual(await q(B, () => DB.inv.map((i) => i.id).sort()), ['i1', 'i2']);
 
-  // 7. Sowing team: sees sowing/stock but not money; can add sowing records; server blocks other writes
+  // 7. Sowing team: one tap, no password; sees sowing/stock but not money, customers or sales
   const C = await device('C');
-  await login(C, 'sowing', 'W-start1');
-  await setNew(C, 'Sowing-new-99');
-  assert(await vis(C, 'app'));
+  await q(C, () => pickRole('sowing'));
+  await C.waitForTimeout(600);
+  assert(await vis(C, 'app'), 'sowing opens with one tap');
+  assert(!(await vis(C, 'pwBox')) && !(await vis(C, 'pwNewBox')), 'no password asked');
   await sync(C);
   assert.equal(await q(C, () => DB.exp.length), 0, 'sowing cannot see expenses');
+  assert.equal(
+    await q(C, () => DB.cust.length + DB.orders.length),
+    0,
+    'sowing cannot see customers or sales'
+  );
   assert.equal(await q(C, () => DB.inv.length), 2, 'sowing sees stock');
   await q(C, () => {
     DB.sowing.push({ id: 's1', variety: 'Zara F1', date: today() });
@@ -361,15 +368,19 @@ async function handle(route, dev) {
   assert.equal(await q(A, () => DB.sowing.filter((s) => s.id === 's1').length), 1);
   assert(!serverColl('audit').length || true);
 
-  // 8. Loise changes the Sowing password from Settings; logout; login again with new password (no forced change)
+  // 8. Loise changes the Sales password from Settings (Sowing is not offered); logout; login again
   await q(A, () => go('set'));
   await A.waitForTimeout(200);
-  await A.selectOption('#cp_r', 'sowing');
-  await A.fill('#cp_p', 'Sowing-2027');
-  await A.fill('#cp_p2', 'Sowing-2027');
+  assert.deepEqual(await q(A, () => [...document.querySelectorAll('#cp_r option')].map((o) => o.value)), [
+    'loise',
+    'sales'
+  ]);
+  await A.selectOption('#cp_r', 'sales');
+  await A.fill('#cp_p', 'Sales-2027');
+  await A.fill('#cp_p2', 'Sales-2027');
   await q(A, () => changePwFromSettings());
   await A.waitForTimeout(400);
-  assert.equal(users.sowing.pw, 'Sowing-2027');
+  assert.equal(users.sales.pw, 'Sales-2027');
   console.log('settings dialog:', A._dialogs.slice(-1)[0]);
   await q(A, () => doLogout(true));
   await A.waitForTimeout(800);
@@ -385,7 +396,8 @@ async function handle(route, dev) {
   // 9. role switch on one device clears the previous role's copy
   await q(B, () => doLogout(true));
   await B.waitForTimeout(800);
-  await login(B, 'sowing', 'Sowing-2027');
+  await q(B, () => pickRole('sowing'));
+  await B.waitForTimeout(600);
   await sync(B);
   assert.equal(await q(B, () => DB.exp.length), 0, 'sales data wiped for sowing');
   assert.equal(await q(B, () => DB.sowing.length), 1);
@@ -406,7 +418,7 @@ async function handle(route, dev) {
   };
   const D = await device('D', old);
   assert(!(await vis(D, 'app')), 'old local session needs online sign-in');
-  await login(D, 'sales', 'Sales-new-99');
+  await login(D, 'sales', 'Sales-2027');
   await sync(D);
   assert(rows.has('orders|o-old'), 'old order uploaded');
   assert.equal(serverColl('orders').length, 2, 'record without id got one');

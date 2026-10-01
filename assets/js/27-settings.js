@@ -113,7 +113,7 @@ function rSet() {
     (isLoise()
       ? '<div class="card"><h3><svg class="ic"><use href="#i-key"/></svg> ' +
         t('password') +
-        '</h3><div class="frow"><div><label>Role</label><select id="cp_r"><option value="loise">Loise</option><option value="sales">Sales</option><option value="sowing">Sowing Team</option></select></div><div><label>' +
+        '</h3><div class="frow"><div><label>Role</label><select id="cp_r"><option value="loise">Loise</option><option value="sales">Sales</option></select></div><div><label>' +
         t('password') +
         '</label><input id="cp_p" type="password" autocomplete="new-password"></div><div><label>Repeat password</label><input id="cp_p2" type="password" autocomplete="new-password"></div></div>' +
         '<button class="btn" onclick="changePwFromSettings()"><svg class="ic"><use href="#i-save"/></svg></button></div>'
@@ -289,7 +289,9 @@ function restore(inp) {
         alert('Restored');
         location.reload();
       } catch (err) {
-        alert('This file is not a Mkulima backup. Choose the Mkulima_Full_<date>.json file that Backup downloaded.');
+        alert(
+          'This file is not a Mkulima backup. Choose the Mkulima_Full_<date>.json file that Backup downloaded.'
+        );
       }
       return;
     }
@@ -356,7 +358,9 @@ function restore(inp) {
       alert('Imported ' + n);
       location.reload();
     } catch (err) {
-      alert('Could not read this file. For a full restore choose the Mkulima_Full_<date>.json backup; Excel/CSV files can only add customers, stock and similar lists.');
+      alert(
+        'Could not read this file. For a full restore choose the Mkulima_Full_<date>.json backup; Excel/CSV files can only add customers, stock and similar lists.'
+      );
     }
   };
   if (f.name.endsWith('.json') || f.name.endsWith('.csv')) r.readAsText(f);

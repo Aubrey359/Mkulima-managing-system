@@ -19,7 +19,11 @@ var pendingRole = null;
 function sessFor(r) {
   return { role: r, u: r === 'loise' ? 'Loise' : r === 'sales' ? 'Sales Team' : 'Sowing Team' };
 }
+// Sowing Team has no password for the workers: the app signs in for them with this fixed
+// credential. The server only lets this account see sowing-related data (no customers or sales).
+var SOWING_OPEN_PW = 'mkulima-sowing-open';
 function pickRole(r) {
+  if (r === 'sowing') return openSignIn(r);
   pendingRole = r;
   document.getElementById('loginErr').textContent = '';
   document.getElementById('lgStepRole').style.display = 'none';
@@ -50,6 +54,33 @@ function backToRoles() {
 var NO_NET = 'No internet connection — connect to the internet to sign in.';
 function netErr(e) {
   return !e || /fetch|network|load failed|timed? ?out/i.test(e.message || String(e));
+}
+function openSignIn(r) {
+  var le = document.getElementById('loginErr');
+  pendingRole = null;
+  if (!sbInit()) {
+    le.textContent = NO_NET;
+    return;
+  }
+  le.textContent = 'Signing in…';
+  SB.auth.signInWithPassword({ email: ROLE_EMAIL[r], password: SOWING_OPEN_PW }).then(
+    function (res) {
+      var u = res.data && (res.data.user || (res.data.session && res.data.session.user));
+      if (res.error || !u || (u.app_metadata || {}).role !== r) {
+        sndWarn();
+        le.textContent =
+          res.error && res.error.status !== 400 && netErr(res.error)
+            ? 'Cannot reach the server — check the internet connection'
+            : 'Could not open ' + ROLES[r].label + ' — please tell the office';
+        return;
+      }
+      le.textContent = '';
+      finishLogin(r);
+    },
+    function () {
+      le.textContent = 'Cannot reach the server — check the internet connection';
+    }
+  );
 }
 function submitPass() {
   if (!pendingRole) return;

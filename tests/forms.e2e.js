@@ -325,7 +325,10 @@ const LIBS = {
   const fileInput = await p2.$('input[type=file][onchange*="restore"]');
   const named = path.join(require('os').tmpdir(), bk.suggestedFilename());
   fs.copyFileSync(bkPath, named);
+  // restoring reloads the page: wait for that reload before reading the data
+  const reloaded = p2.waitForEvent('load', { timeout: 15000 });
   await fileInput.setInputFiles(named);
+  await reloaded;
   await p2
     .waitForFunction(() => typeof DB !== 'undefined' && DB && DB.orders.length > 0, null, { timeout: 8000 })
     .catch(() => {});

@@ -188,7 +188,7 @@ var ROLES = {
     desc: 'Sales, customers, attendance, stock & reports (no employee management)',
     nav: ['dash', 'sales', 'book', 'inv', 'cat', 'sow', 'prop', 'man', 'crm', 'att', 'rep']
   },
-  sowing: { label: 'Sowing Team', desc: 'Sowing records & sowing report only', nav: ['sow'] }
+  sowing: { label: 'Sowing Team', desc: 'Sowing records & sowing report only — no password', nav: ['sow'] }
 };
 var NAV = {
   dash: ['<svg class="ic"><use href="#i-chart"/></svg>', 'Dashboard'],
