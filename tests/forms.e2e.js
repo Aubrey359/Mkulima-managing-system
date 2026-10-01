@@ -317,7 +317,14 @@ const LIBS = {
     localStorage.setItem('mk_session_v3', JSON.stringify({ role: 'loise', u: 'Loise' }));
   });
   const p2 = await ctx2.newPage();
-  p2.on('dialog', (d) => d.accept());
+  const p2dialogs = [];
+  let restoredSeen;
+  const restoredDialog = new Promise((r) => (restoredSeen = r));
+  p2.on('dialog', (d) => {
+    p2dialogs.push(d.message().slice(0, 60));
+    if (/^Restored/.test(d.message())) restoredSeen();
+    d.accept();
+  });
   p2.on('pageerror', (e) => errs.push('restore: ' + e.message));
   await p2.goto(PAGE);
   await p2.waitForTimeout(500);
@@ -325,15 +332,24 @@ const LIBS = {
   const fileInput = await p2.$('input[type=file][onchange*="restore"]');
   const named = path.join(require('os').tmpdir(), bk.suggestedFilename());
   fs.copyFileSync(bkPath, named);
-  // restoring reloads the page: wait for that reload before reading the data
-  const reloaded = p2.waitForEvent('load', { timeout: 15000 });
+  // restoring asks for confirmation, says "Restored", then reloads the page: wait for each step
   await fileInput.setInputFiles(named);
-  await reloaded;
+  await Promise.race([restoredDialog, new Promise((r) => setTimeout(r, 15000))]);
+  await p2.waitForLoadState('load');
   await p2
-    .waitForFunction(() => typeof DB !== 'undefined' && DB && DB.orders.length > 0, null, { timeout: 8000 })
+    .waitForFunction(() => typeof DB !== 'undefined' && DB && DB.orders.length > 0, null, { timeout: 15000 })
     .catch(() => {});
-  const restored = await p2.evaluate(() => ({ orders: DB.orders.length, cust: DB.cust.length }));
-  console.log('Restore'.padEnd(22), '→', JSON.stringify(restored));
+  const restored = await p2.evaluate(() => ({
+    orders: DB.orders.length,
+    cust: DB.cust.length,
+    stored: (JSON.parse(localStorage.getItem('mkulimaDB_v3') || '{}').orders || []).length
+  }));
+  console.log(
+    'Restore'.padEnd(22),
+    '→',
+    JSON.stringify(restored),
+    restored.orders ? '' : 'dialogs: ' + JSON.stringify(p2dialogs)
+  );
   assert.equal(restored.orders, bkData.orders.length, 'restore brings back the orders');
 
   console.log('page errors:', errs);
