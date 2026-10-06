@@ -1,7 +1,7 @@
 # Putting Mkulima Seedlings on the Google Play Store
 
 The Play Store app is a thin Android wrapper (a *Trusted Web Activity*) around the live web app at
-https://shamba-sokoni.onrender.com. It opens full-screen with no browser bar and uses the same data,
+https://mkulima-seedlings-system.onrender.com. It opens full-screen with no browser bar and uses the same data,
 logins, syncing and offline support. **Every update published to the website appears in the Play
 Store app automatically**, with no new Store release needed.
 
@@ -15,7 +15,7 @@ Everything in this folder is ready to upload:
 | `assetlinks.template.json` | Links the Android app to the website (step 4) |
 | This file | Listing text, form answers, step-by-step instructions |
 
-The privacy policy is live at **https://shamba-sokoni.onrender.com/privacy.html** and linked from
+The privacy policy is live at **https://mkulima-seedlings-system.onrender.com/privacy.html** and linked from
 the sign-in screen. Please have the company read it and correct anything that doesn't match how you
 work (it is written from how the app works, but it is not legal advice).
 
@@ -30,14 +30,14 @@ work (it is written from how the app works, but it is not legal advice).
      testers for 14 days** before publishing to everyone.
 2. **Web address.** The Android app is tied to one web address. If you plan to use your own
    (e.g. `app.mkulimaseedlings.co.ke`), set it up **before** step 1 below; otherwise the app is tied to
-   `shamba-sokoni.onrender.com`.
+   `mkulima-seedlings-system.onrender.com`.
 3. **Package name** (permanent, can never change): suggested `com.mkulimaseedlings.app`.
 
 ---
 
 ## 1. Build the Android package (about 30 minutes, on a computer)
 
-1. Open **https://www.pwabuilder.com**, enter `https://shamba-sokoni.onrender.com` and click **Start**.
+1. Open **https://www.pwabuilder.com**, enter `https://mkulima-seedlings-system.onrender.com` and click **Start**.
    It should show the app's name, icons, offline support (service worker) and manifest as passing.
 2. Click **Package for stores → Android → Generate Package**. Use these options:
 
@@ -47,12 +47,12 @@ work (it is written from how the app works, but it is not legal advice).
    | App name | `Mkulima Seedlings` |
    | Launcher name | `Mkulima` |
    | App version / version code | `1.0.0` / `1` |
-   | Host | `shamba-sokoni.onrender.com` |
+   | Host | `mkulima-seedlings-system.onrender.com` |
    | Start URL | `/index.html` |
    | Theme colour / nav colour | `#264B22` |
    | Background (splash) colour | `#EAF5EC` |
-   | Icon | `https://shamba-sokoni.onrender.com/assets/icon-512.png` |
-   | Maskable icon | `https://shamba-sokoni.onrender.com/assets/icon-maskable-512.png` |
+   | Icon | `https://mkulima-seedlings-system.onrender.com/assets/icon-512.png` |
+   | Maskable icon | `https://mkulima-seedlings-system.onrender.com/assets/icon-maskable-512.png` |
    | Display mode | Standalone |
    | Notifications / location delegation | Off |
    | Fallback behaviour | Custom Tabs |
@@ -84,7 +84,7 @@ of both the *App signing key* and the *Upload key*.
 Send the two fingerprints to whoever maintains the code (or paste them yourself): put them in
 `assetlinks.template.json`, save it in the repository as `.well-known/assetlinks.json`, and push. The
 build already publishes that folder. Check it at
-https://shamba-sokoni.onrender.com/.well-known/assetlinks.json. Without this file the app still
+https://mkulima-seedlings-system.onrender.com/.well-known/assetlinks.json. Without this file the app still
 works, but shows a browser address bar at the top.
 
 ## 5. Store listing (Grow → Store presence → Main store listing)
@@ -141,13 +141,13 @@ screenshots `screenshots/01…08` (upload in that order). The screenshots use de
 customers.
 
 **Category:** Business. **Contact:** mkulimaseedlings@gmail.com, 0711 844 850,
-website https://shamba-sokoni.onrender.com.
+website https://mkulima-seedlings-system.onrender.com.
 
 ## 6. App content (Policy → App content) — suggested answers
 
 | Form | Answer |
 |------|--------|
-| Privacy policy | `https://shamba-sokoni.onrender.com/privacy.html` |
+| Privacy policy | `https://mkulima-seedlings-system.onrender.com/privacy.html` |
 | Ads | No, the app has no ads |
 | App access | *All or some functionality is restricted* → add instructions (below) |
 | Content rating | Category *Utility, Productivity, Communication or Other*; answer **No** to all violence, sexual, language, drugs, gambling, user-interaction questions → rated *Everyone / 3+* |

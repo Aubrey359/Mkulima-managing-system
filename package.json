@@ -1,5 +1,5 @@
 {
-  "name": "shamba-sokoni-system",
+  "name": "mkulima-seedlings-system",
   "private": true,
   "scripts": {
     "test": "node tests/sync.e2e.js && node tests/offline.e2e.js && node tests/forms.e2e.js && node tests/buttons.e2e.js && node tests/mpesa.e2e.js",
