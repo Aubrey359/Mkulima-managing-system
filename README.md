@@ -4,7 +4,7 @@ Management system for **Mkulima Mdogo Seedlings** (Nakuru) — a single-file web
 
 ## Live app
 
-https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `main` branch changes. Render settings: **Build Command** `npm run build`, **Publish Directory** `public` (only `index.html`, `privacy.html`, `sw.js`, `assets/` and, once added, `.well-known/` are published).
+https://shamba-sokoni.onrender.com — a Render static site that redeploys automatically whenever the `main` branch changes. Render settings: **Build Command** `npm run build`, **Publish Directory** `public` (only `index.html`, `privacy.html`, `guide.html`, `sw.js`, `assets/` and, once added, `.well-known/` are published).
 
 After the first visit, the app opens even without internet: `sw.js` (a service worker) keeps a copy of the app on the device and refreshes it whenever the device is online.
 
@@ -31,6 +31,7 @@ sw.js                       service worker: lets the app open without internet
 supabase/migrations/        database setup
 tests/                      end-to-end tests (sync, numbering, offline, forms, buttons)
 privacy.html                privacy policy (linked from the sign-in screen; needed for the Play Store)
+guide.html                  staff guide, English + Kiswahili, printable (https://shamba-sokoni.onrender.com/guide.html)
 playstore/                  Play Store listing: icon, feature graphic, screenshots, guide (PLAYSTORE.md)
 ```
 

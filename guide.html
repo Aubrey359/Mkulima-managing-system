@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Staff Guide — Mkulima Seedlings</title>
+<link rel="icon" type="image/png" href="assets/icon-96.png">
+<style>
+  :root { --green: #14532d; --green2: #15803d; --ink: #1d2b22; --muted: #5b6b61; --bg: #f4faf5; --line: #d9e8dd; --amber: #b45309; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  header { background: linear-gradient(135deg, #1f6b3a, var(--green)); color: #fff; padding: 22px 16px; }
+  header .in, main { max-width: 820px; margin: 0 auto; }
+  header img { width: 52px; height: 52px; background: #fff; border-radius: 50%; padding: 6px; vertical-align: middle; margin-right: 12px; }
+  header h1 { display: inline-block; vertical-align: middle; margin: 0; font-size: 23px; line-height: 1.25; }
+  header p { margin: 8px 0 0; opacity: .9; font-size: 14px; }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .bar button { border: 1px solid rgba(255,255,255,.6); background: transparent; color: #fff; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 14px; cursor: pointer; }
+  .bar button.on { background: #fff; color: var(--green); }
+  main { padding: 8px 16px 48px; }
+  h2 { color: var(--green); font-size: 19px; margin: 28px 0 8px; padding-bottom: 4px; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 16px; margin: 16px 0 4px; }
+  p, li { margin: 5px 0; }
+  ol, ul { padding-left: 22px; }
+  b.ui { background: #e7f3ea; border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; font-weight: 600; white-space: nowrap; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; margin-top: 12px; }
+  .tip { border-left: 4px solid var(--amber); }
+  .who { -webkit-print-color-adjust: exact; print-color-adjust: exact; display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #fff; background: var(--green2); border-radius: 999px; padding: 1px 9px; margin-right: 6px; vertical-align: 2px; }
+  .muted { color: var(--muted); font-size: 14px; }
+  a { color: var(--green2); }
+  [data-l="sw"] { display: none; }
+  body.sw [data-l="en"] { display: none; }
+  body.sw [data-l="sw"] { display: block; }
+  body.sw span[data-l="sw"] { display: inline; }
+  @media print {
+    header { background: none; color: var(--ink); padding: 0 0 8px; border-bottom: 2px solid var(--green); }
+    header img { border: 1px solid var(--line); }
+    .bar, .noprint { display: none !important; }
+    body { background: #fff; font-size: 12.5px; }
+    h2 { break-after: avoid; margin-top: 16px; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<header><div class="in">
+  <img src="assets/icon-192.png" alt="">
+  <h1><span data-l="en">Staff Guide</span><span data-l="sw">Mwongozo wa Wafanyakazi</span></h1>
+  <p data-l="en">Mkulima Seedlings management app — how to use it every day, starting today.</p>
+  <p data-l="sw">Programu ya Mkulima Seedlings — jinsi ya kuitumia kila siku, kuanzia leo.</p>
+  <div class="bar">
+    <button id="b_en" class="on" onclick="setLang('en')">English</button>
+    <button id="b_sw" onclick="setLang('sw')">Kiswahili</button>
+    <button onclick="window.print()">🖨 Print</button>
+  </div>
+</div></header>
+<main>
+
+<!-- ============ ENGLISH ============ -->
+<div data-l="en">
+  <div class="card tip">
+    <b>We start fresh today.</b> Old records stay in the old books. From today, every sale, booking, sowing and
+    attendance goes into the app — on any phone or computer, everyone sees the same records.
+  </div>
+
+  <h2>1. Open the app</h2>
+  <ol>
+    <li>Open <a href="https://shamba-sokoni.onrender.com">shamba-sokoni.onrender.com</a> in Chrome.</li>
+    <li>Install it: Chrome menu <b class="ui">⋮</b> → <b class="ui">Add to Home screen</b> (or <b class="ui">Install app</b>). It then opens like any other app.</li>
+    <li>Tap your area: <b class="ui">Loise</b>, <b class="ui">Sales — Managers</b> or <b class="ui">Sowing Team</b>.
+      Loise and Sales type their password. The Sowing Team opens with one tap, no password.</li>
+    <li>Language: tap <b class="ui">English | Kiswahili</b> at the top.</li>
+  </ol>
+  <p class="muted">Never share the Loise or Sales password with the sowing team or casual workers. On a shared phone, sign out when you finish.</p>
+
+  <h2>2. Before the first day <span class="who">Loise</span></h2>
+  <ol>
+    <li><b class="ui">Catalogue</b>: 60 seedling varieties are already loaded. Check each price and correct it; add any missing variety, delete what you don't sell.</li>
+    <li><b class="ui">Inventory</b>: count what is in the nursery today and enter the quantities. This is the starting stock.</li>
+    <li><b class="ui">Employees</b>: add every staff member (name, phone, role, salary). Attendance and payroll use this list.</li>
+    <li><b class="ui">Customers</b>: add regular customers now, or let them be added as they buy.</li>
+    <li><b class="ui">Bookings</b>: enter any orders customers have already paid deposits for, with the deposit amount and pick-up date.</li>
+    <li>Customers who still owe money from before: record one sale for each with the amount owed and payment = <b class="ui">Credit</b>, so the balance shows in the app.</li>
+  </ol>
+
+  <h2>3. Every day</h2>
+  <div class="card">
+    <h3><span class="who">Sales</span> Record a sale</h3>
+    <ol>
+      <li><b class="ui">Sales</b> → <b class="ui">Add Sales</b>.</li>
+      <li>Choose the customer (or type a new name and phone), add each item and quantity. The price comes from the catalogue; you may change it.</li>
+      <li>Choose how they paid: <b class="ui">Cash</b>, <b class="ui">M-Pesa</b>, Bank, or <b class="ui">Credit</b> (pays later). Enter the amount paid.</li>
+      <li><b class="ui">Save</b> — stock goes down and a receipt is ready to print or share.</li>
+    </ol>
+    <p><b>M-Pesa:</b> tap <b class="ui">Request M-Pesa payment</b>, check the number and amount, <b class="ui">Send request</b>. The customer enters their PIN and the M-Pesa code fills in by itself.
+    If they paid to the till themselves, type the code from their SMS (e.g. SJK4ABC123) into <b class="ui">M-Pesa code</b>.</p>
+    <p><b>A customer pays a debt:</b> <b class="ui">Sales</b> → <b class="ui">Order Book</b> → find the sale → tap the 💵 pay button.</p>
+  </div>
+  <div class="card">
+    <h3><span class="who">Sales</span> Bookings</h3>
+    <p>Customer orders now and picks up later: <b class="ui">Bookings</b> → enter variety, quantity, deposit and pick-up date → <b class="ui">Save</b>. When the seedlings are ready tap <b class="ui">Ready</b>; when the customer collects tap <b class="ui">Picked up</b>.</p>
+  </div>
+  <div class="card">
+    <h3><span class="who">Sales</span> Attendance — every morning</h3>
+    <p><b class="ui">Attendance</b> → for each worker tap <b class="ui">Present</b>, <b class="ui">Leave</b> or <b class="ui">Absent</b>.</p>
+  </div>
+  <div class="card">
+    <h3><span class="who">Sowing Team</span> Record sowing</h3>
+    <ol>
+      <li>Open the app → <b class="ui">Sowing Team</b> (no password).</li>
+      <li>Enter the date, variety, quantity, unit and the expected ready date. <b class="ui">Save</b>.</li>
+      <li>When the seedlings are ready, tap <b class="ui">Ready → Stock</b> on that line and enter how many seedlings came out. They are added to the stock for sale.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>Stock in and out</h3>
+    <p><b class="ui">Inventory</b> → <b class="ui">+ In</b> for stock received, <b class="ui">− Out</b> for losses or damage. Sales take stock out by themselves — don't do it twice.</p>
+  </div>
+
+  <h2>4. End of the day <span class="who">Sales</span> <span class="who">Loise</span></h2>
+  <ol>
+    <li><b class="ui">Reports</b> → <b class="ui">Daily summary (Z report)</b>.</li>
+    <li>Count the cash. It must match the cash total. Check the M-Pesa total against the till/Paybill statement.</li>
+    <li>If something doesn't match, find the sale today, not next week.</li>
+  </ol>
+
+  <h2>5. Every month <span class="who">Loise</span></h2>
+  <ol>
+    <li><b class="ui">Settings</b> → <b class="ui">Backup (Excel + JSON)</b>. Two files download: an Excel file to read, and <b>Mkulima_Full_&lt;date&gt;.json</b> to restore from.</li>
+    <li>Keep both safe: email them to <b>mkulimaseedlings@gmail.com</b> or save them to Google Drive.</li>
+    <li>Pay salaries and staff loans from <b class="ui">Employees</b> → <b>Staff loans &amp; salary</b>; record expenses in <b class="ui">Accounting</b> as they happen.</li>
+  </ol>
+
+  <h2>6. Internet</h2>
+  <ul>
+    <li>The app works without internet. Work goes on; it is sent when the network is back.</li>
+    <li>The top bar shows <b class="ui">Synced 10:42</b> (all sent), <b class="ui">Offline — 3 changes waiting</b>, or <b class="ui">Sync problem</b>. Tap it to try again.</li>
+    <li>Open the app with internet at least once a day on every phone, so others see your work.</li>
+    <li>Don't clear Chrome's data or uninstall the app while changes are waiting.</li>
+  </ul>
+
+  <h2>7. When something goes wrong</h2>
+  <ul>
+    <li>Wrong entry: open it, edit or delete it. Every change is recorded with who made it.</li>
+    <li>Forgot the password: Loise changes it in <b class="ui">Settings</b>.</li>
+    <li>Phone lost: change the Loise and Sales passwords at once from another phone.</li>
+  </ul>
+</div>
+
+<!-- ============ KISWAHILI ============ -->
+<div data-l="sw">
+  <div class="card tip">
+    <b>Tunaanza upya leo.</b> Rekodi za zamani zinabaki kwenye vitabu vya zamani. Kuanzia leo, kila mauzo, booking,
+    upandaji na mahudhurio yanaingizwa kwenye programu — kwa simu au kompyuta yoyote, kila mtu anaona rekodi zilezile.
+  </div>
+
+  <h2>1. Fungua programu</h2>
+  <ol>
+    <li>Fungua <a href="https://shamba-sokoni.onrender.com">shamba-sokoni.onrender.com</a> kwenye Chrome.</li>
+    <li>Isakinishe: menyu ya Chrome <b class="ui">⋮</b> → <b class="ui">Add to Home screen</b> (au <b class="ui">Install app</b>). Kisha inafunguka kama programu nyingine.</li>
+    <li>Gusa sehemu yako: <b class="ui">Loise</b>, <b class="ui">Sales — Managers</b> au <b class="ui">Sowing Team</b>.
+      Loise na Sales wanaandika nenosiri. Timu ya Kupanda inafungua kwa mguso mmoja, bila nenosiri.</li>
+    <li>Lugha: gusa <b class="ui">English | Kiswahili</b> juu.</li>
+  </ol>
+  <p class="muted">Usimpe mtu wa timu ya kupanda au kibarua nenosiri la Loise au Sales. Kwenye simu ya pamoja, toka (sign out) ukimaliza.</p>
+
+  <h2>2. Kabla ya siku ya kwanza <span class="who">Loise</span></h2>
+  <ol>
+    <li><b class="ui">Orodha ya Miche</b>: aina 60 za miche zimeshawekwa. Kagua kila bei na uirekebishe; ongeza aina inayokosekana, futa usizouza.</li>
+    <li><b class="ui">Stoka</b>: hesabu kilichopo kitaluni leo na uingize idadi. Hii ndiyo stoka ya kuanzia.</li>
+    <li><b class="ui">Wafanyakazi</b>: ongeza kila mfanyakazi (jina, simu, kazi, mshahara). Mahudhurio na mishahara hutumia orodha hii.</li>
+    <li><b class="ui">Wateja</b>: ongeza wateja wa kawaida sasa, au waongezwe wanaponunua.</li>
+    <li><b class="ui">Bookings</b>: ingiza oda ambazo wateja wameshalipia amana, pamoja na kiasi cha amana na tarehe ya kuchukua.</li>
+    <li>Wateja wanaodaiwa kutoka zamani: andika mauzo moja kwa kila mmoja yenye kiasi anachodaiwa na malipo = <b class="ui">Deni</b>, ili deni lionekane kwenye programu.</li>
+  </ol>
+
+  <h2>3. Kila siku</h2>
+  <div class="card">
+    <h3><span class="who">Sales</span> Kuandika mauzo</h3>
+    <ol>
+      <li><b class="ui">Mauzo</b> → <b class="ui">Ongeza Mauzo</b>.</li>
+      <li>Chagua mteja (au andika jina jipya na simu), ongeza kila bidhaa na idadi. Bei inatoka kwenye orodha; unaweza kuibadilisha.</li>
+      <li>Chagua njia ya malipo: <b class="ui">Pesa taslimu</b>, <b class="ui">M-Pesa</b>, Benki, au <b class="ui">Deni</b> (atalipa baadaye). Ingiza kiasi kilicholipwa.</li>
+      <li><b class="ui">Hifadhi</b> — stoka inapungua na risiti iko tayari kuchapishwa au kutumwa.</li>
+    </ol>
+    <p><b>M-Pesa:</b> gusa <b class="ui">Request M-Pesa payment</b>, kagua namba na kiasi, <b class="ui">Send request</b>. Mteja anaingiza PIN na namba ya M-Pesa inajaa yenyewe.
+    Kama amelipa mwenyewe kwenye till, andika namba kutoka kwenye SMS yake (mfano SJK4ABC123) kwenye <b class="ui">M-Pesa code</b>.</p>
+    <p><b>Mteja analipa deni:</b> <b class="ui">Mauzo</b> → <b class="ui">Kitabu cha Oda</b> → tafuta mauzo → gusa kitufe cha 💵 kulipa.</p>
+  </div>
+  <div class="card">
+    <h3><span class="who">Sales</span> Bookings</h3>
+    <p>Mteja anaagiza sasa na kuchukua baadaye: <b class="ui">Bookings</b> → ingiza aina, idadi, amana na tarehe ya kuchukua → <b class="ui">Hifadhi</b>. Miche ikiwa tayari gusa <b class="ui">Iko tayari</b>; mteja akichukua gusa <b class="ui">Imechukuliwa</b>.</p>
+  </div>
+  <div class="card">
+    <h3><span class="who">Sales</span> Mahudhurio — kila asubuhi</h3>
+    <p><b class="ui">Mahudhurio</b> → kwa kila mfanyakazi gusa <b class="ui">Yupo</b>, <b class="ui">Likizo</b> au <b class="ui">Hayupo</b>.</p>
+  </div>
+  <div class="card">
+    <h3><span class="who">Sowing Team</span> Kuandika upandaji</h3>
+    <ol>
+      <li>Fungua programu → <b class="ui">Sowing Team</b> (bila nenosiri).</li>
+      <li>Ingiza tarehe, aina, idadi, kipimo na tarehe inayotarajiwa kuwa tayari. <b class="ui">Hifadhi</b>.</li>
+      <li>Miche ikiwa tayari, gusa <b class="ui">Ready → Stock</b> kwenye mstari huo na uingize idadi iliyo tayari. Inaongezwa kwenye stoka ya kuuza.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>Stoka kuingia na kutoka</h3>
+    <p><b class="ui">Stoka</b> → <b class="ui">+ In</b> kwa stoka iliyopokelewa, <b class="ui">− Out</b> kwa iliyopotea au kuharibika. Mauzo yanatoa stoka yenyewe — usiitoe mara mbili.</p>
+  </div>
+
+  <h2>4. Mwisho wa siku <span class="who">Sales</span> <span class="who">Loise</span></h2>
+  <ol>
+    <li><b class="ui">Ripoti</b> → <b class="ui">Muhtasari wa Siku (Z)</b>.</li>
+    <li>Hesabu pesa taslimu. Lazima ilingane na jumla ya cash. Linganisha jumla ya M-Pesa na taarifa ya till/Paybill.</li>
+    <li>Kama kitu hakilingani, tafuta mauzo hayo leo, si wiki ijayo.</li>
+  </ol>
+
+  <h2>5. Kila mwezi <span class="who">Loise</span></h2>
+  <ol>
+    <li><b class="ui">Mipangilio</b> → <b class="ui">Backup (Excel + JSON)</b>. Faili mbili zinapakuliwa: Excel ya kusoma, na <b>Mkulima_Full_&lt;tarehe&gt;.json</b> ya kurejesha.</li>
+    <li>Zihifadhi salama: zitume kwa <b>mkulimaseedlings@gmail.com</b> au uziweke Google Drive.</li>
+    <li>Lipa mishahara na mikopo ya wafanyakazi kupitia <b class="ui">Wafanyakazi</b> → <b>Staff loans &amp; salary</b>; andika matumizi kwenye <b class="ui">Uhasibu</b> yanapotokea.</li>
+  </ol>
+
+  <h2>6. Intaneti</h2>
+  <ul>
+    <li>Programu inafanya kazi bila intaneti. Kazi inaendelea; inatumwa mtandao ukirudi.</li>
+    <li>Juu inaonyesha <b class="ui">Synced 10:42</b> (yote yametumwa), <b class="ui">Offline — 3 changes waiting</b>, au <b class="ui">Sync problem</b>. Gusa ili ujaribu tena.</li>
+    <li>Fungua programu ukiwa na intaneti angalau mara moja kwa siku kwenye kila simu, ili wengine waone kazi yako.</li>
+    <li>Usifute data ya Chrome wala kuondoa programu wakati kuna mabadiliko yanayosubiri.</li>
+  </ul>
+
+  <h2>7. Kitu kikienda vibaya</h2>
+  <ul>
+    <li>Umekosea kuingiza: ifungue, irekebishe au uifute. Kila badiliko linaandikwa na nani amelifanya.</li>
+    <li>Umesahau nenosiri: Loise analibadilisha kwenye <b class="ui">Mipangilio</b>.</li>
+    <li>Simu imepotea: badilisha nenosiri la Loise na Sales mara moja kutoka simu nyingine.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <b>Mkulima Seedlings Limited</b> · P.O. Box 880-20100, Nakuru ·
+  <a href="mailto:mkulimaseedlings@gmail.com">mkulimaseedlings@gmail.com</a> · 0711 844 850 / 0746 424 437
+</div>
+<p class="muted noprint" style="margin-top:20px"><a href="index.html">← <span data-l="en">Back to the app</span><span data-l="sw">Rudi kwenye programu</span></a></p>
+</main>
+<script>
+  function setLang(l) {
+    document.body.classList.toggle('sw', l === 'sw');
+    document.documentElement.lang = l;
+    document.getElementById('b_en').classList.toggle('on', l !== 'sw');
+    document.getElementById('b_sw').classList.toggle('on', l === 'sw');
+    try { localStorage.setItem('mk_lang', l); } catch (e) {}
+  }
+  try { if (localStorage.getItem('mk_lang') === 'sw') setLang('sw'); } catch (e) {}
+</script>
+</body>
+</html>
