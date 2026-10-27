@@ -73,7 +73,7 @@ Loise and Sales: the first sign-in with a starter password asks for a new passwo
 
 `npm install && npx playwright install chromium && npm test` runs the end-to-end tests: sign-in and syncing across several simulated devices (against an in-memory stand-in for Supabase) including document numbering; opening the app offline; filling in and saving every main form (sales, credit, bookings, stock, sowing, customers, accounts, staff, payroll, attendance, purchasing, documents, propagation, catalogue, reports, Excel export, backup and restore); and clicking every button as each role. They run automatically on GitHub for every push (`.github/workflows/test.yml`). Set `CHROMIUM_PATH` to use a specific Chromium.
 
-A second workflow (`.github/workflows/keepalive.yml`) runs every 3 hours: it touches the database, the data API and the sign-in service so the free Supabase project stays awake, and if the project has been paused anyway it restarts it automatically.
+A second workflow (`.github/workflows/keepalive.yml`) runs every 3 hours: it runs a query in the database and checks the sign-in service so the free Supabase project stays awake, and if the project has been paused anyway it restarts it automatically.
 
 ### Database keeps pausing (automatic restart setup)
 

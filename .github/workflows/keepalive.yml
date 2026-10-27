@@ -3,7 +3,7 @@ name: Keep Supabase awake
 # Free Supabase projects pause after a week without activity. Every 3 hours this
 #  1. checks whether the project is paused and, if so, restarts it (needs the
 #     SUPABASE_ACCESS_TOKEN repository secret — see README "Database keeps pausing"), then
-#  2. touches the database, the data API and the sign-in service so it stays awake.
+#  2. runs a query in the database (ping) and checks the sign-in service so it stays awake.
 # A red run means the database could not be reached or restarted; GitHub emails the repo owner.
 on:
   schedule:
@@ -48,10 +48,6 @@ jobs:
         run: |
           curl -fsS --retry 3 --retry-delay 20 -X POST "$SB_URL/rest/v1/rpc/ping" \
             -H "apikey: $SB_KEY" -H "Content-Type: application/json" -d '{}'
-      - name: Read from the data table
-        run: |
-          curl -fsS --retry 3 --retry-delay 20 "$SB_URL/rest/v1/records?select=id&limit=1" \
-            -H "apikey: $SB_KEY"
       - name: Check the sign-in service
         run: |
           curl -fsS --retry 3 --retry-delay 20 "$SB_URL/auth/v1/health" -H "apikey: $SB_KEY"
