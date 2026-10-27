@@ -133,7 +133,7 @@ function showDupModal() {
             esc(c.loc || '—') +
             '</span><button class="btn red sm" onclick="if(confirm(\'Delete this duplicate record?\')){DB.cust=DB.cust.filter(function(x){return x.id!==\'' +
             c.id +
-            '\'});saveDB();closeModal();showDupModal();if(CUR===\'crm\')rCRMList()}">Delete</button></div>'
+            "'});saveDB();closeModal();showDupModal();if(CUR==='crm')rCRMList()}\">Delete</button></div>"
           );
         })
         .join('<hr style="margin:6px 0">') +
@@ -215,10 +215,9 @@ function printStatement(cid) {
     ': ' +
     fmt(owed) +
     '</h3><p style="font-size:11px;color:#555">' +
-    (LANG === 'sw' ? 'Tafadhali lipa kupitia ' : 'Please pay via ') +
-    ' ' +
-    COMPANY.tel +
-    ' (M-Pesa). ' +
+    (payHow(LANG === 'sw') ||
+      (LANG === 'sw' ? 'Tafadhali lipa kupitia ' : 'Please pay via ') + COMPANY.tel + ' (M-Pesa)') +
+    ' · ' +
     esc(COMPANY.name) +
     '.</p>';
   printHTML(h);

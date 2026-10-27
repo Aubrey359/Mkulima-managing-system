@@ -179,10 +179,90 @@ function mpesaDone(receipt, amount, id) {
   MPESA.onPaid = null;
 }
 
+/* ---------- Equity Bank paybill: how customers pay ----------
+ The company is paid by M-Pesa to Equity Bank's Paybill (247247) with its Equity account number.
+ Saved in DB.meta so every device shows and prints the same details. */
+function payBank() {
+  var m = (DB && DB.meta) || {};
+  return { paybill: m.payPaybill || '247247', acc: m.payAcc || '' };
+}
+// One line for forms and printed documents; empty until Loise has entered the account number
+function payHow(sw) {
+  var b = payBank();
+  if (!b.acc) return '';
+  return (
+    (sw ? 'Lipa kwa M-Pesa: ' : 'Pay by M-Pesa: ') +
+    'Paybill <b>' +
+    esc(b.paybill) +
+    '</b> · ' +
+    (sw ? 'Namba ya akaunti' : 'Account no.') +
+    ' <b>' +
+    esc(b.acc) +
+    '</b> (Equity Bank)'
+  );
+}
+function payHowBox() {
+  var h = payHow(LANG === 'sw');
+  return h
+    ? '<div class="mpHow" style="flex-basis:100%;font-size:13px;background:var(--bg2);border:1px solid var(--green2);border-radius:8px;padding:8px 10px;margin-bottom:6px">' +
+        h +
+        '<br><span style="color:var(--muted)">Type the M-Pesa code from the customer’s SMS below.</span></div>'
+    : '';
+}
+function equitySettingsCard() {
+  var b = payBank();
+  return (
+    '<div class="card"><h3><svg class="ic"><use href="#i-money"/></svg> Equity Bank — how customers pay</h3>' +
+    '<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Customers pay by M-Pesa to Equity Bank’s Paybill with the company’s Equity account number. These details are printed on receipts, invoices, quotations and statements, and shown to staff on the sale form.</p>' +
+    '<div class="frow"><div><label>Paybill number</label><input id="eq_pb" inputmode="numeric" value="' +
+    esc(b.paybill) +
+    '"></div><div><label>Equity account number</label><input id="eq_acc" inputmode="numeric" placeholder="e.g. 0123456789012" value="' +
+    esc(b.acc) +
+    '"></div></div>' +
+    '<div class="rowflex mt"><button class="btn" onclick="equitySave()"><svg class="ic"><use href="#i-save"/></svg> Save Equity details</button></div></div>'
+  );
+}
+function equitySave() {
+  var pb = (document.getElementById('eq_pb').value || '').replace(/\s/g, ''),
+    acc = (document.getElementById('eq_acc').value || '').replace(/\s/g, '').toUpperCase();
+  if (!/^\d{5,7}$/.test(pb)) return alert('Enter the Paybill number (Equity Bank: 247247)');
+  if (acc && !/^[A-Z0-9]{4,20}$/.test(acc))
+    return alert('The account number should be letters and digits only, e.g. 0123456789012');
+  DB.meta.payPaybill = pb;
+  DB.meta.payAcc = acc;
+  logAudit('Changed Equity payment details');
+  saveDB();
+  sndOk();
+  alert(acc ? 'Saved. Customers pay to Paybill ' + pb + ', account ' + acc + '.' : 'Saved.');
+}
+
+/* Automatic prompts (STK Push) need the company's own Safaricom Paybill/Till and Daraja keys.
+ The "Request M-Pesa payment" buttons stay hidden until that is set up. */
+function mpesaReqButtons() {
+  var show = function () {
+    document.querySelectorAll('.mpReq').forEach(function (b) {
+      b.style.display = MPESA.cfg ? '' : 'none';
+    });
+  };
+  show();
+  if (MPESA.cfg !== undefined || MPESA.cfgAsked || !sbInit() || !navigator.onLine) return;
+  MPESA.cfgAsked = true;
+  SB.rpc('mpesa_status').then(
+    function (res) {
+      MPESA.cfg = !!(res && res.data && res.data.configured);
+      show();
+    },
+    function () {
+      MPESA.cfgAsked = false;
+    }
+  );
+}
+
 /* ---------- Sale form ---------- */
 function oPayToggle() {
   var w = document.getElementById('o_mwrap');
   if (w) w.style.display = document.getElementById('o_pay').value === 'M-Pesa' ? '' : 'none';
+  mpesaReqButtons();
 }
 function oMpesaRequest() {
   var total = num(document.getElementById('o_total').value),
@@ -206,7 +286,9 @@ function oMpesaRequest() {
 /* ---------- Settings (Loise) ---------- */
 function mpesaSettingsCard() {
   return (
-    '<div class="card"><h3><svg class="ic"><use href="#i-phone"/></svg> M-Pesa (Lipa na M-Pesa)</h3>' +
+    equitySettingsCard() +
+    '<div class="card"><details><summary style="cursor:pointer;font-weight:700"><svg class="ic"><use href="#i-phone"/></svg> Automatic M-Pesa prompts (optional)</summary>' +
+    '<p style="font-size:13px;color:var(--muted);margin:8px 0">Sends the payment request straight to the customer’s phone. This needs the company’s <b>own</b> Safaricom Paybill or Till and Daraja keys — it does not work with Equity’s Paybill 247247. Not needed to record payments.</p>' +
     '<div id="mps_status" style="font-size:13px;margin-bottom:10px;color:var(--muted)">Checking…</div>' +
     '<div class="frow"><div><label>Mode</label><select id="mps_env"><option value="sandbox">Test (Daraja sandbox)</option><option value="production">Live payments</option></select></div>' +
     '<div><label>Account type</label><select id="mps_type" onchange="mpsTypeToggle()"><option value="paybill">Paybill</option><option value="till">Till (Buy Goods)</option></select></div>' +
@@ -217,7 +299,7 @@ function mpesaSettingsCard() {
     '<div><label>Passkey</label><input id="mps_pass" type="password" autocomplete="off" placeholder="Test mode: leave blank"></div></div>' +
     '<p style="font-size:12px;color:var(--muted)">Keys come from Safaricom’s Daraja portal (developer.safaricom.co.ke). They are stored on the server only — phones never see them. Leave a key blank to keep the saved one.</p>' +
     '<div class="rowflex mt"><button class="btn" onclick="mpsSave()"><svg class="ic"><use href="#i-save"/></svg> Save M-Pesa settings</button>' +
-    '<button class="btn gray" onclick="mpesaRequest({amount:1,ref:\'Test\'})">Send KES 1 test request</button></div></div>'
+    '<button class="btn gray" onclick="mpesaRequest({amount:1,ref:\'Test\'})">Send KES 1 test request</button></div></details></div>'
   );
 }
 function mpsTypeToggle() {
@@ -270,6 +352,8 @@ function mpsSave() {
       document.getElementById(id).value = '';
     });
     logAudit('Changed M-Pesa settings');
+    MPESA.cfg = undefined;
+    MPESA.cfgAsked = false;
     saveDB();
     alert('M-Pesa settings saved.');
     mpsLoad();

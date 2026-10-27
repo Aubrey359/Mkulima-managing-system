@@ -1,5 +1,25 @@
 # M-Pesa payments (Lipa na M-Pesa)
 
+## Current setup: Equity Bank Paybill
+
+The company is paid by M-Pesa to **Equity Bank's Paybill 247247** with its Equity account number.
+
+1. Loise: **Settings → Equity Bank — how customers pay** → enter the Equity account number → **Save**
+   (once; it reaches every device).
+2. On a sale (or when settling credit) choose **M-Pesa**. The screen shows the Paybill and account number to give
+   the customer. When their confirmation SMS arrives, type its code into **M-Pesa code** and save.
+3. The Paybill and account number print on receipts, invoices, quotations and customer statements.
+
+The code is saved on the sale, the receipt and the accounts, and counted in the daily Z report.
+
+The automatic prompt described below (Daraja STK Push) only works with a Paybill or Till the company owns,
+not with Equity's 247247. Its settings are under **Settings → Automatic M-Pesa prompts (optional)**, and the
+**Request M-Pesa payment** buttons stay hidden until it is set up.
+
+---
+
+## Optional: automatic prompts (company's own Safaricom Paybill/Till)
+
 The app takes real M-Pesa payments through Safaricom's **Daraja** service ("STK Push"):
 
 1. On a sale (or when settling credit), choose **M-Pesa** and tap **Request M-Pesa payment**.

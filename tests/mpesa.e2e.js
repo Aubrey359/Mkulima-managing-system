@@ -232,6 +232,7 @@ const PAGE = 'file://' + path.resolve(__dirname, '../index.html');
   // 6. Settings: status shown; saving sends the values; keys cleared from the screen afterwards
   await p.evaluate(() => go('set'));
   await waitFor(() => /Not set up/.test((document.getElementById('mps_status') || {}).textContent || ''));
+  await p.evaluate(() => (document.getElementById('mps_key').closest('details').open = true));
   await p.fill('#mps_key', 'abc');
   await p.fill('#mps_secret', 'def');
   await p.evaluate(() => mpsSave());
@@ -240,6 +241,23 @@ const PAGE = 'file://' + path.resolve(__dirname, '../index.html');
   assert.equal(saved.p_consumer_key, 'abc');
   assert.equal(saved.p_env, 'sandbox');
   assert.equal(await p.inputValue('#mps_key'), '', 'key cleared from the screen');
+
+  // 7. Equity Bank paybill: saved in Settings, shown on the sale form and printed documents;
+  //    the automatic-prompt button stays hidden while M-Pesa prompts are not set up
+  await p.fill('#eq_acc', '0123 4567 8901');
+  await p.evaluate(() => equitySave());
+  assert.deepEqual(await p.evaluate(() => [DB.meta.payPaybill, DB.meta.payAcc]), ['247247', '012345678901']);
+  await newSale(5);
+  await p.waitForTimeout(300);
+  const form = await p.evaluate(() => ({
+    how: document.querySelector('#o_mwrap .mpHow').textContent,
+    req: getComputedStyle(document.querySelector('#o_mwrap .mpReq')).display
+  }));
+  console.log('equity on sale form:', JSON.stringify(form));
+  assert(/247247/.test(form.how) && /012345678901/.test(form.how));
+  assert.equal(form.req, 'none', 'request button hidden when prompts are not set up');
+  const rc = await p.evaluate(() => receiptHTML(DB.orders[DB.orders.length - 1]));
+  assert(/Paybill <b>247247<\/b>/.test(rc) && /012345678901/.test(rc), 'Equity details on the receipt');
 
   console.log('page errors:', errs);
   assert.equal(errs.length, 0);

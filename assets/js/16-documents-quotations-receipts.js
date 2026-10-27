@@ -372,6 +372,7 @@ function receiptHTML(o) {
     esc(COMPANY.motto || '') +
     '</i><br><span style="font-size:10.5px;color:#bbf7d0">' +
     (sw ? 'Hifadhi risiti hii kama ushahidi wa malipo' : 'Keep this receipt as proof of payment') +
+    (payHow(sw) ? '<br>' + payHow(sw) : '') +
     '</span></div></div>'
   );
 }
@@ -449,6 +450,11 @@ function docPrint(d) {
         COMPANY.tel +
         '</div>';
     }
+    if (/^(Quotation|Invoice|Proforma)/.test(d.type) && payHow(LANG === 'sw'))
+      body +=
+        '<p style="margin-top:10px;font-size:12.5px;border:1px solid #14532d;padding:8px 10px;border-radius:8px">' +
+        payHow(LANG === 'sw') +
+        '</p>';
     if (d.notes) body += '<p>' + t('notes') + ': ' + esc(d.notes) + '</p>';
     if (d.comm || d.empName2)
       body +=
