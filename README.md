@@ -73,7 +73,17 @@ Loise and Sales: the first sign-in with a starter password asks for a new passwo
 
 `npm install && npx playwright install chromium && npm test` runs the end-to-end tests: sign-in and syncing across several simulated devices (against an in-memory stand-in for Supabase) including document numbering; opening the app offline; filling in and saving every main form (sales, credit, bookings, stock, sowing, customers, accounts, staff, payroll, attendance, purchasing, documents, propagation, catalogue, reports, Excel export, backup and restore); and clicking every button as each role. They run automatically on GitHub for every push (`.github/workflows/test.yml`). Set `CHROMIUM_PATH` to use a specific Chromium.
 
-A second workflow (`.github/workflows/keepalive.yml`) pings the database every two days so the free Supabase project is never paused for inactivity.
+A second workflow (`.github/workflows/keepalive.yml`) runs every 3 hours: it touches the database, the data API and the sign-in service so the free Supabase project stays awake, and if the project has been paused anyway it restarts it automatically.
+
+### Database keeps pausing (automatic restart setup)
+
+Free Supabase projects can still be paused. To let GitHub restart it by itself:
+
+1. Supabase → your avatar (top right) → **Account preferences → Access Tokens** → **Generate new token**, name it `github-keepalive`, copy it.
+2. GitHub → this repository → **Settings → Secrets and variables → Actions → New repository secret**: name `SUPABASE_ACCESS_TOKEN`, paste the token, **Add secret**.
+3. **Actions → Keep Supabase awake → Run workflow** once; the first step should say `Database status: ACTIVE_HEALTHY`.
+
+A restart takes a few minutes, so staff may see "Cannot reach the server" until the next run (at most 3 hours). The paid Supabase plan never pauses.
 
 ## Go-live checklist
 

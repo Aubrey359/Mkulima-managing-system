@@ -1,22 +1,49 @@
 name: Keep Supabase awake
 
-# Free Supabase projects pause after a week without activity. This touches the
-# database, the data API and the sign-in service every day so the shared data
-# stays online. If the project is already paused, these calls fail and the run
-# turns red (GitHub emails the repo owner): restore it from the Supabase dashboard.
+# Free Supabase projects pause after a week without activity. Every 3 hours this
+#  1. checks whether the project is paused and, if so, restarts it (needs the
+#     SUPABASE_ACCESS_TOKEN repository secret — see README "Database keeps pausing"), then
+#  2. touches the database, the data API and the sign-in service so it stays awake.
+# A red run means the database could not be reached or restarted; GitHub emails the repo owner.
 on:
   schedule:
-    - cron: '17 6 * * *'
+    - cron: '17 */3 * * *'
   workflow_dispatch:
 
 env:
+  SB_REF: ydorittbbchiywpgjvel
   SB_URL: https://ydorittbbchiywpgjvel.supabase.co
   SB_KEY: sb_publishable_kxLESJMSPyUZ33y1caeKwQ_znRXLmh4
 
 jobs:
-  ping:
+  keepalive:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
+      - name: Restart the database if it is paused
+        env:
+          TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::warning::SUPABASE_ACCESS_TOKEN secret not set - cannot restart a paused database automatically"
+            exit 0
+          fi
+          api="https://api.supabase.com/v1/projects/$SB_REF"
+          status() { curl -fsS --retry 3 "$api" -H "Authorization: Bearer $TOKEN" | jq -r .status; }
+          s=$(status); echo "Database status: $s"
+          case "$s" in
+            INACTIVE|PAUSED)
+              echo "::warning::Database was paused - restarting it"
+              curl -fsS -X POST "$api/restore" -H "Authorization: Bearer $TOKEN" ;;
+            ACTIVE_HEALTHY) exit 0 ;;
+          esac
+          # Wait up to 15 minutes for it to come back
+          for i in $(seq 1 45); do
+            s=$(status); echo "Database status: $s"
+            [ "$s" = "ACTIVE_HEALTHY" ] && exit 0
+            sleep 20
+          done
+          echo "::error::Database did not come back up (status $s)"; exit 1
       - name: Ping database
         run: |
           curl -fsS --retry 3 --retry-delay 20 -X POST "$SB_URL/rest/v1/rpc/ping" \
