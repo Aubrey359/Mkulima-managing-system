@@ -1,11 +1,17 @@
 name: Keep Supabase awake
 
-# Free Supabase projects pause after a week without activity. This pings the
-# database every two days so the shared data stays online.
+# Free Supabase projects pause after a week without activity. This touches the
+# database, the data API and the sign-in service every day so the shared data
+# stays online. If the project is already paused, these calls fail and the run
+# turns red (GitHub emails the repo owner): restore it from the Supabase dashboard.
 on:
   schedule:
-    - cron: '17 6 */2 * *'
+    - cron: '17 6 * * *'
   workflow_dispatch:
+
+env:
+  SB_URL: https://ydorittbbchiywpgjvel.supabase.co
+  SB_KEY: sb_publishable_kxLESJMSPyUZ33y1caeKwQ_znRXLmh4
 
 jobs:
   ping:
@@ -13,6 +19,12 @@ jobs:
     steps:
       - name: Ping database
         run: |
-          curl -fsS -X POST "https://ydorittbbchiywpgjvel.supabase.co/rest/v1/rpc/ping" \
-            -H "apikey: sb_publishable_kxLESJMSPyUZ33y1caeKwQ_znRXLmh4" \
-            -H "Content-Type: application/json" -d '{}'
+          curl -fsS --retry 3 --retry-delay 20 -X POST "$SB_URL/rest/v1/rpc/ping" \
+            -H "apikey: $SB_KEY" -H "Content-Type: application/json" -d '{}'
+      - name: Read from the data table
+        run: |
+          curl -fsS --retry 3 --retry-delay 20 "$SB_URL/rest/v1/records?select=id&limit=1" \
+            -H "apikey: $SB_KEY"
+      - name: Check the sign-in service
+        run: |
+          curl -fsS --retry 3 --retry-delay 20 "$SB_URL/auth/v1/health" -H "apikey: $SB_KEY"
