@@ -92,7 +92,7 @@ var EN = {
   email: 'Email',
   employee: 'Employee',
   expenses: 'Expenses',
-  export: 'Export (Excel)',
+  export: 'Export (PDF)',
   follow: 'Follow up',
   grand: 'Grand total',
   import: 'Import (Excel/Word)',
@@ -557,15 +557,151 @@ function printHTML(html, cls) {
     '</p>';
   window.print();
 }
+/* Export a list as a PDF file (company header, table, page numbers) — jsPDF + AutoTable,
+ served with the app from assets/vendor so it also works offline. */
+var PDF_TITLES = { OrderBook: 'Order Book' };
+// The built-in PDF fonts only cover Western European letters: swap the few other characters we use
+function pdfText(v) {
+  if (v === null || v === undefined) return '';
+  if (typeof v === 'number')
+    return isFinite(v) ? v.toLocaleString('en-KE', { maximumFractionDigits: 2 }) : '';
+  return String(v)
+    .replace(/[–—]/g, '-')
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/…/g, '...')
+    .replace(/[✓✔]/g, 'Yes')
+    .replace(/[^\x00-\xff]/g, '');
+}
+// The logo as a data URL for the PDF (null when the browser will not allow it, e.g. a file:// page)
+function pdfLogo() {
+  return new Promise(function (ok) {
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var c = document.createElement('canvas');
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        ok(c.toDataURL('image/png'));
+      } catch (e) {
+        ok(null);
+      }
+    };
+    img.onerror = function () {
+      ok(null);
+    };
+    img.src = LOGO_ICON;
+  });
+}
 function exportRows(name, rows) {
   if (!rows || !rows.length) {
     alert(t('nothing'));
     return;
   }
-  var ws = XLSX.utils.json_to_sheet(rows);
-  var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, name.slice(0, 28));
-  XLSX.writeFile(wb, name + '.xlsx');
+  if (!window.jspdf || !window.jspdf.jsPDF)
+    return alert('The PDF maker did not load. Reload the app and try again.');
+  var title = PDF_TITLES[name] || name;
+  var cols = [];
+  rows.forEach(function (r) {
+    Object.keys(r).forEach(function (k) {
+      if (cols.indexOf(k) < 0) cols.push(k);
+    });
+  });
+  // Right-align columns that hold only numbers
+  var numCol = {};
+  cols.forEach(function (k, i) {
+    var any = false,
+      allNum = rows.every(function (r) {
+        var v = r[k];
+        if (v === null || v === undefined || v === '') return true;
+        any = true;
+        return typeof v === 'number';
+      });
+    if (any && allNum) numCol[i] = { halign: 'right' };
+    // Short values (phones, dates, numbers, codes) stay on one line; long text columns wrap
+    var longest = rows.reduce(function (m, r) {
+      return Math.max(m, pdfText(r[k]).length);
+    }, pdfText(k).length);
+    if (longest <= 14) (numCol[i] = numCol[i] || {}).cellWidth = 'wrap';
+  });
+  return pdfLogo().then(function (logo) {
+    var doc = new window.jspdf.jsPDF({
+      orientation: cols.length > 5 ? 'landscape' : 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+    var W = doc.internal.pageSize.getWidth(),
+      x = 14;
+    doc.setFillColor(20, 83, 45);
+    doc.rect(0, 0, W, 26, 'F');
+    if (logo) {
+      doc.setFillColor(255, 255, 255);
+      doc.circle(x + 8, 13, 9, 'F');
+      doc.addImage(logo, 'PNG', x + 1.5, 6.5, 13, 13);
+      x += 21;
+    }
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text(pdfText(COMPANY.name), x, 11);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.text(
+      pdfText([COMPANY.addr, 'Tel ' + COMPANY.tel, COMPANY.email].filter(Boolean).join('  ·  ')),
+      x,
+      17
+    );
+    doc.text(pdfText('"' + (COMPANY.motto || '') + '"'), x, 21.5);
+    doc.setTextColor(20, 83, 45);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(15);
+    doc.text(pdfText(title), 14, 36);
+    doc.setTextColor(90, 90, 90);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    var who = session && ROLES[session.role] ? ROLES[session.role].label : '';
+    doc.text(
+      pdfText(
+        rows.length +
+          (rows.length === 1 ? ' record' : ' records') +
+          '  ·  ' +
+          new Date().toLocaleString('en-KE') +
+          (who ? '  ·  ' + who : '')
+      ),
+      14,
+      41.5
+    );
+    var tableOpts = {
+      startY: 46,
+      head: [cols.map(pdfText)],
+      body: rows.map(function (r) {
+        return cols.map(function (k) {
+          return pdfText(r[k]);
+        });
+      }),
+      columnStyles: numCol,
+      styles: { fontSize: cols.length > 8 ? 7.5 : 8.5, cellPadding: 1.8, overflow: 'linebreak' },
+      headStyles: { fillColor: [20, 83, 45], textColor: 255, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [240, 247, 242] },
+      margin: { left: 14, right: 14, bottom: 14 }
+    };
+    if (typeof doc.autoTable === 'function') doc.autoTable(tableOpts);
+    else window.autoTable(doc, tableOpts);
+    var n = doc.internal.getNumberOfPages();
+    for (var p = 1; p <= n; p++) {
+      doc.setPage(p);
+      doc.setFontSize(8);
+      doc.setTextColor(120, 120, 120);
+      var H = doc.internal.pageSize.getHeight();
+      doc.text(pdfText(COMPANY.name + ' - ' + title), 14, H - 7);
+      doc.text('Page ' + p + ' of ' + n, W - 14, H - 7, { align: 'right' });
+    }
+    var file = 'Mkulima_' + title.replace(/[^A-Za-z0-9]+/g, '_') + '_' + today() + '.pdf';
+    doc.save(file);
+    if (typeof logAudit === 'function') logAudit('PDF exported: ' + title);
+    return file;
+  });
 }
 // Reference codes for the demo data only (real payments carry Safaricom's M-Pesa receipt code)
 function demoMpesaCode() {

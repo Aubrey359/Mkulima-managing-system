@@ -265,7 +265,7 @@ const LIBS = {
   await p.evaluate(() => catForm());
   await fillSave('Catalogue item', '#modalBox', 'catSave');
 
-  // ---- Excel export and backup download
+  // ---- PDF export and backup download
   const dl1 = p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
   await p.evaluate(() => {
     go('att');
@@ -275,7 +275,8 @@ const LIBS = {
     b && b.click();
   });
   const x = await dl1;
-  console.log('Excel export'.padEnd(22), '→', x ? x.suggestedFilename() : 'NO DOWNLOAD');
+  console.log('PDF export'.padEnd(22), '→', x ? x.suggestedFilename() : 'NO DOWNLOAD');
+  if (!x || !/\.pdf$/.test(x.suggestedFilename())) throw new Error('Export did not download a PDF');
   const dls = [];
   p.on('download', (d) => dls.push(d));
   await p.evaluate(() => backup());

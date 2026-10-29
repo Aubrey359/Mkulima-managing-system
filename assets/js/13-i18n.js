@@ -27,7 +27,7 @@ var SW = {
   next: 'Endelea',
   save: 'Hifadhi',
   print: 'Chapisha',
-  export: 'Hamisha nje (Excel)',
+  export: 'Hamisha nje (PDF)',
   import: 'Leta (Excel/Word)',
   search: 'Tafuta',
   total: 'Jumla',

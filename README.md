@@ -25,6 +25,7 @@ assets/js/02-…28-*.js       one file per part of the app: page hints, search, 
 assets/js/29-cloud-sync.js  Supabase sign-in and syncing
 assets/js/30-init.js        starts the app
 assets/js/31-mpesa.js       M-Pesa payment requests and settings
+assets/vendor/              PDF libraries (jsPDF + AutoTable) served with the app so PDF export works offline
 supabase/functions/         server functions for M-Pesa (mpesa-stk, mpesa-callback)
 assets/*.png, manifest      logos, app icons, install manifest
 sw.js                       service worker: lets the app open without internet
@@ -71,7 +72,7 @@ Loise and Sales: the first sign-in with a starter password asks for a new passwo
 
 ## Tests
 
-`npm install && npx playwright install chromium && npm test` runs the end-to-end tests: sign-in and syncing across several simulated devices (against an in-memory stand-in for Supabase) including document numbering; opening the app offline; filling in and saving every main form (sales, credit, bookings, stock, sowing, customers, accounts, staff, payroll, attendance, purchasing, documents, propagation, catalogue, reports, Excel export, backup and restore); and clicking every button as each role. They run automatically on GitHub for every push (`.github/workflows/test.yml`). Set `CHROMIUM_PATH` to use a specific Chromium.
+`npm install && npx playwright install chromium && npm test` runs the end-to-end tests: sign-in and syncing across several simulated devices (against an in-memory stand-in for Supabase) including document numbering; opening the app offline; filling in and saving every main form (sales, credit, bookings, stock, sowing, customers, accounts, staff, payroll, attendance, purchasing, documents, propagation, catalogue, reports, PDF export, backup and restore); every Export (PDF) button producing a real PDF; and clicking every button as each role. They run automatically on GitHub for every push (`.github/workflows/test.yml`). Set `CHROMIUM_PATH` to use a specific Chromium.
 
 A second workflow (`.github/workflows/keepalive.yml`) runs every 3 hours: it runs a query in the database and checks the sign-in service so the free Supabase project stays awake, and if the project has been paused anyway it restarts it automatically.
 

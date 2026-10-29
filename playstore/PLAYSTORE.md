@@ -120,7 +120,7 @@ STAFF & ACCOUNTS
 • Employees, attendance, staff loans, payroll and payslips
 • Income, expenses and monthly profit & loss
 • Daily summary (Z report) and one-tap printable reports
-• Export to Excel and full backups
+• Export lists to PDF and full backups
 
 BUILT FOR THE FIELD
 • Works without internet — changes upload automatically when the connection returns
